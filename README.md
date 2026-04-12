@@ -1,17 +1,14 @@
 # API REST - Sistema de Gestão de Linhas Aéreas
 
 ## 1. Descrição do Sistema
-Este projeto é uma API RESTful desenvolvida para a disciplina de Integração de Sistemas de Software (Avaliação A2-1). O sistema tem como objetivo gerenciar as operações básicas de uma companhia aérea, controlando o registro de **Aeronaves**, a programação de **Voos**, o cadastro de **Passageiros** e a emissão de **Passagens**.
-
-O projeto original (baseado em arquivos CSV e menus de console) foi totalmente refatorado para operar como um serviço web, focando em separação de responsabilidades, regras de negócio reais e persistência de dados em banco de dados relacional.
 
 ## 2. Tecnologias Utilizadas
 * **Linguagem:** Java 24
 * **Arquitetura:** MVC (Model, View/JSON, Controller)
 * **Comunicação:** HTTP / REST
 * **Manipulação de Dados:** JSON (via biblioteca [Jackson](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core))
-* **Persistência:** JDBC (Java Database Connectivity)
-* **Banco de Dados:** [INSERIR O BANCO DE DADOS AQUI, ex: MySQL, PostgreSQL, H2]
+* **Persistência:** 
+* **Banco de Dados:** 
 
 ## 3. Arquitetura e Padrões
 O projeto possui as seguintes camadas rigorosamente separadas:
