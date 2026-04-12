@@ -19,8 +19,8 @@ O projeto possui as seguintes camadas:
 4. **Controllers:** Pontos de entrada da API, responsáveis por expor os Endpoints, receber as requisições HTTP, delegar o processamento aos *Services* e devolver as respostas em formato JSON.
 
 ## 4. Regras de Negócio Aplicadas
-* **Aeronaves:** Não é possível cadastrar uma aeronave com capacidade de assentos zerada ou negativa. O tipo da aeronave é um campo obrigatório.
-* **Voos:** Ao alocar um voo, a API deve validar se a aeronave designada existe e possui capacidade disponível.
+* **Aeronaves:** Não é possível cadastrar uma aeronave com capacidade de assentos zerada ou negativa.
+* **Voos:** Ao alocar um voo, a API deve validar se a aeronave designada existe e possui capacidade disponível, não é possivel modificar a quantidade de assentos manualmente, o número se baseia na quantidade de passageiros.
 
 ## 5. Lista de Endpoints
 
