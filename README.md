@@ -1,4 +1,4 @@
-# API REST - Sistema de Gestão de Linhas Aéreas ✈️
+# API REST - Sistema de Gestão de Linhas Aéreas
 
 ## 1. Descrição do Sistema
 Este projeto é uma API RESTful desenvolvida para a disciplina de Integração de Sistemas de Software (Avaliação A2-1). O sistema tem como objetivo gerenciar as operações básicas de uma companhia aérea, controlando o registro de **Aeronaves** e a programação de **Voos**.
