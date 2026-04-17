@@ -1,7 +1,7 @@
 package br.edu.up.model;
 
 public class Aeronave {
-    private int id;
+    private String id;
     private String tipo;
     private int capacidadeAssentos;
 
@@ -9,14 +9,18 @@ public class Aeronave {
 
     }
 
-    public Aeronave(int id, String tipo, int capacidadeAssentos) {
+    public Aeronave(String id, String tipo, int capacidadeAssentos) {
         this.id = id;
         this.tipo = tipo;
         this.capacidadeAssentos = capacidadeAssentos;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTipo() {
@@ -34,4 +38,5 @@ public class Aeronave {
     public void setCapacidadeAssentos(int capacidadeAssentos) {
         this.capacidadeAssentos = capacidadeAssentos;
     }
+
 }

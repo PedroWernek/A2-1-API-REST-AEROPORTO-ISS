@@ -2,7 +2,7 @@ package br.edu.up.model;
 
 
 public class Voo {
-    private int id;
+    private String id;
     private String origem;
     private String destino;
     private String dataHoraVoo;
@@ -13,20 +13,20 @@ public class Voo {
     public Voo() {
     }
 
-    public Voo(int id, String origem, String destino, String dataHoraVoo, Aeronave aeronave) throws IllegalArgumentException{
-        if(aeronave.getCapacidadeAssentos() <= 0){
-            throw new IllegalArgumentException("Nave cadastrada com número inválido de assentos (" + aeronave.getCapacidadeAssentos() + ")");
-        }else {
-            this.id = id;
-            this.origem = origem;
-            this.destino = destino;
-            this.dataHoraVoo = dataHoraVoo;
-            this.assentosDisponiveis = aeronave.getCapacidadeAssentos();
-            this.aeronave = aeronave;
-        }
+    public Voo(String id, String origem, String destino, String dataHoraVoo, int assentosDisponiveis, Aeronave aeronave) {
+        this.id = id;
+        this.origem = origem;
+        this.destino = destino;
+        this.dataHoraVoo = dataHoraVoo;
+        this.assentosDisponiveis = assentosDisponiveis;
+        this.aeronave = aeronave;
     }
 
-    public int getId() {
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
         return id;
     }
 
@@ -58,16 +58,15 @@ public class Voo {
         return assentosDisponiveis;
     }
 
+    public void setAssentosDisponiveis(int assentosDisponiveis) {
+        this.assentosDisponiveis = assentosDisponiveis;
+    }
+
     public Aeronave getAeronave() {
         return aeronave;
     }
 
-    public void setAeronave(Aeronave aeronave) throws IllegalArgumentException {
-        int quantidadeDeAssentos = aeronave.getCapacidadeAssentos();
-        if(quantidadeDeAssentos <= 0){
-            throw new IllegalArgumentException("Nave cadastrada com número inválido de assentos (" + quantidadeDeAssentos + ")");
-        }else {
-            this.aeronave = aeronave;
-        }
+    public void setAeronave(Aeronave aeronave) {
+        this.aeronave = aeronave;
     }
 }

@@ -1,19 +1,16 @@
 package br.edu.up.model;
 
 public class Passagem {
-    private int id;
+    private String id;
     private String assento;
     private double valor; //preço da passagem
 
     private Voo voo;
     private Passageiro passageiro;
 
-    /*
-    * TEMOS QUE VER A FORMA EM QUE A QUANTIDADE DE ASSENTOS IRÁ QUANDO UMA NOVA PASSAGEM FOR CRIADA
-    * */
     public Passagem() {}
 
-    public Passagem(int id, String assento, double valor, Voo voo, Passageiro passageiro) {
+    public Passagem(String id, String assento, double valor, Voo voo, Passageiro passageiro) {
         this.id = id;
         this.assento = assento;
         this.valor = valor;
@@ -21,9 +18,12 @@ public class Passagem {
         this.passageiro = passageiro;
     }
 
-    // Getters e Setters
-    public int getId() {
+    public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getAssento() {
@@ -57,4 +57,5 @@ public class Passagem {
     public void setPassageiro(Passageiro passageiro) {
         this.passageiro = passageiro;
     }
+
 }
