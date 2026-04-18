@@ -18,7 +18,7 @@ import java.net.InetSocketAddress;
     cpf VARCHAR(14) NOT NULL
   );
 * */
-//Recomendo vocês usarem Postgress para fazer as requisições
+//Recomendo vocês usarem Postman para fazer as requisições
 public class Main {
     public static void main(String[] args) throws Exception{
         HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
