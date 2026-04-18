@@ -9,17 +9,40 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
+//Comando para criar a tabela:
+/*
+    USE aeroporto;
+
+    CREATE TABLE passageiro(
+        id VARCHAR(50) PRIMARY KEY,
+        nome VARCHAR(100) NOT NULL,
+        cpf VARCHAR(14) NOT NULL
+    );
+* */
 public class PassageiroRepository {
 
     public void salvar(Passageiro p) throws SQLException {
+
+        //String com o script sql que será executado no banco
         String sql = "INSERT INTO passageiro (id, nome, cpf) VALUES (?, ?, ?)";
 
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql))
+        //estou usando aquela fabrica já criada
+        try (
+                //pegando a connexão com o banco via ConnectionFactory
+                Connection conn = ConnectionFactory.getConnection();
+
+                //preparando a declaração que é o script lá em cima
+                //para que eu possa inserir as informações antes de mandar de volta
+                PreparedStatement stmt = conn.prepareStatement(sql))
         {
-            stmt.setString(1, p.getId());
-            stmt.setString(2, p.getNome());
-            stmt.setString(3, p.getCpf());
+            //inserindo as informações dentro dos ? na string script
+            stmt.setString(1, p.getId());//primeiro ?
+            stmt.setString(2, p.getNome());//segundo ?
+            stmt.setString(3, p.getCpf());//terceiro ?
+
+            //mandando as informações
             stmt.executeUpdate();
         }
     }
@@ -30,6 +53,9 @@ public class PassageiroRepository {
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
+
+             //mesma coisa de cima só que aqui eu juá executo a quary e
+             //já pego as informaç~eso para que eu possa preencher a lista
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
