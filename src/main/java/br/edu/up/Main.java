@@ -6,11 +6,12 @@ import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+//Importem em seu mySQL o
+//'aeroporto_passageiro.sql'
+//que é ondem está nossa base
+//no nosso repositório
 
-//Criem o bd Aeroporto
-//CREATE DATABASE aeroporto;
-
-//Criem as tabelas
+//Para criar tabelas:
 /*
 * CREATE TABLE passageiro( //essa é a primeira tabela que criei por enquanto
     id VARCHAR(50) PRIMARY KEY,
@@ -18,6 +19,7 @@ import java.net.InetSocketAddress;
     cpf VARCHAR(14) NOT NULL
   );
 * */
+
 //Recomendo vocês usarem Postman para fazer as requisições
 public class Main {
     public static void main(String[] args) throws Exception{
