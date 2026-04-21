@@ -15,28 +15,41 @@ public class PassageiroHandler implements HttpHandler {
     private final PassageiroService service = new PassageiroService();
 
 
-    //vendo qual requisição foi feita para que seja feita a operação
+    //vendo qual requisição foi feita para ser feita a operação
     @Override
     public void handle(HttpExchange exchange) throws IOException {
+        String path = exchange.getRequestURI().getPath();
+        String[] parts = path.split("/");
+        String id = (parts.length > 2) ? parts[2] : null;
 
         try {
-
-            if (exchange.getRequestMethod().equals("GET")) {
-                listar(exchange);
-            }
-            else if (exchange.getRequestMethod().equals("POST")) {
-                criar(exchange);
-            } else {
-                exchange.sendResponseHeaders(405, -1);
+            switch (exchange.getRequestMethod()){
+                case "GET":
+                    if(id == null) listar(exchange);
+                    else buscar(exchange, id);
+                    break;
+                case "POST":
+                    criar(exchange);
+                    break;
+                case "PUT":
+                    if(id != null) atualizar(exchange,id);
+                    else exchange.sendResponseHeaders(400,-1);
+                    break;
+                case "DELETE":
+                    if(id != null) deletar(exchange, id);
+                    else exchange.sendResponseHeaders(400,-1);
+                    break;
+                default:
+                    exchange.sendResponseHeaders(405,-1); //Method Not Allowed
             }
 
         } catch (Exception e) {
-            exchange.sendResponseHeaders(500, -1);
+            enviarErro(exchange, e.getMessage());
         }
 
     }
 
-    /**Listando TODOS os passagerios da Tabela passageiro
+    /**Listando TODOS os passageiros da Tabela passageiro
      * não esqueça que a operação que faz a comunicação com o banco está no repository
      */
     private void listar(HttpExchange exchange) throws Exception {
@@ -47,7 +60,7 @@ public class PassageiroHandler implements HttpHandler {
         enviar(exchange, json); //<- *
     }
 
-    /** Criando um novo passageiro no banco
+    /** Criando um passageiro no banco
      *
      *
      */
@@ -55,18 +68,43 @@ public class PassageiroHandler implements HttpHandler {
         Passageiro p = mapper.readValue(exchange.getRequestBody(), Passageiro.class);
         //pegando o corpo da request que está em json
         //e transformando na classe Passageiro
-        //para que assim seja possivel a função no repository
+        //para que assim seja possível a função no repository
         //ler os valores de passageiro e mandar para o banco
 
         Passageiro criado = service.criarPassageiro(p);//salvando no banco
-        String json = mapper.writeValueAsString(criado);//<- por isso a função do repository retorna um Passageiro
+        String json = mapper.writeValueAsString(criado);//< por isso a função do repository retorna um Passageiro
         //para que ele consiga ser lida pelo JACKSON e transformar o valor criado em json para que assim seja mandado ao usuário
 
         enviar(exchange, json);//<- *
     }
 
 
-    // aquela função que a gente manda para o usuário se deu certo ou não está marcada com //<- *
+    private void buscar(HttpExchange exchange, String id) throws Exception {
+        Passageiro p = service.buscarPassageiroPorId(id);
+        enviar(exchange, mapper.writeValueAsString(p));
+    }
+
+    private void atualizar(HttpExchange exchange, String id) throws Exception {
+        Passageiro p = mapper.readValue(exchange.getRequestBody(), Passageiro.class); // pegando o valor da request body
+        Passageiro atualizado = service.atualizarPassageiro(id,p);
+        enviar(exchange, mapper.writeValueAsString(atualizado));
+    }
+
+    private void deletar(HttpExchange exchange, String id) throws Exception {
+        Passageiro p = service.deletarPassageiro(id);
+        enviar(exchange, mapper.writeValueAsString(p));
+    }
+
+    //----------------------------------Mensagens de Retorno------------------------------------------//
+    private void enviarErro(HttpExchange exchange, String erro) throws IOException {
+        byte[] resp = erro.getBytes();
+        exchange.sendResponseHeaders(400, resp.length);
+        OutputStream os = exchange.getResponseBody();
+        os.write(resp);
+        os.close();
+    }
+
+    // aquela função que a gente manda para o utilizador se deu certo ou não está marcada com //<- *
     private void enviar(HttpExchange exchange, String resposta) throws IOException {
         exchange.getResponseHeaders().add("Content-Type", "application/json");
         exchange.sendResponseHeaders(200, resposta.getBytes().length);

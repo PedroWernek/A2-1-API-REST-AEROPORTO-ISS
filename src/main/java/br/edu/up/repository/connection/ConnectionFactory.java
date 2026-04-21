@@ -1,4 +1,4 @@
-package br.edu.up.repository;
+package br.edu.up.repository.connection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
