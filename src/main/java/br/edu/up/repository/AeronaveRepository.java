@@ -80,7 +80,7 @@ public class AeronaveRepository {
     }
 
     public Aeronave buscarPorId(String id) throws SQLException {
-        String sql = "SELECT FROM aeronave WHERE id = ?";
+        String sql = "SELECT * FROM aeronave WHERE id = ?";
 
         //mesma coisa dos de baixo
         try(Connection conn = ConnectionFactory.getConnection();
@@ -106,15 +106,16 @@ public class AeronaveRepository {
     }
 
     public void atualizar(Aeronave a) throws SQLException {
-        String sql = "UPDATE aeronave SET nome = ?, cpf = ? WHERE id = ?";
+        String sql = "UPDATE aeronave SET tipo = ?, capacidadeAssentos = ?, modelo = ? WHERE id = ?";
 
         try(Connection conn = ConnectionFactory.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)){
 
-             stmt.setString(1, a.getId());//primeiro ?
-            stmt.setString(2, a.getTipo());//segundo ?
-            stmt.setInt(3, a.getCapacidadeAssentos());//terceiro ?
-            stmt.setString(4, a.getModelo());//quarto ?
+            
+            stmt.setString(1, a.getTipo());//primeiro ?
+            stmt.setInt(2, a.getCapacidadeAssentos());//segundo ?
+            stmt.setString(3, a.getModelo());//terceiro ?
+             stmt.setString(4, a.getId());//quarto ?
 
             stmt.executeUpdate();
         }

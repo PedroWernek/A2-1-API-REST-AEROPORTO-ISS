@@ -15,7 +15,7 @@ public class AeronaveService {
         if (p.getCapacidadeAssentos() <= 0 || p.getCapacidadeAssentos() > 1000) {
             throw new Exception("Capacidade de aeronave inválida");
         }
-        if (p.getTipo() == "Militar" || p.getTipo() == "Guerra"  || p.getTipo().isEmpty()) {
+        if  ("Militar".equals(p.getTipo()) || "Guerra".equals(p.getTipo()) || p.getTipo().isEmpty()) {
             throw new Exception("Tipo de aeronave inválido");
         }
 
@@ -35,7 +35,7 @@ public class AeronaveService {
     public Aeronave buscarAeronavePorId(String id) throws Exception {
         Aeronave p = repo.buscarPorId(id);
         if (p == null){
-            throw new Exception("Aeronave não encontrado");
+            throw new Exception("Aeronave não encontrada");
         }
         return p;
     }
@@ -47,7 +47,7 @@ public class AeronaveService {
             throw new Exception("Capacidade de aeronave inválida");
         }
         if (p.getTipo() == "Militar" || p.getTipo() == "Guerra"  || p.getTipo().isEmpty()) {
-            throw new Exception("Tipo de aeronave inválido");
+            throw new Exception("Tipo de aeronave inválida");
         }
 
         if (p.getModelo().isEmpty()) {

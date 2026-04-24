@@ -74,7 +74,7 @@ public class PassageiroRepository {
     }
 
     public Passageiro buscarPorId(String id) throws SQLException {
-        String sql = "SELECT FROM passageiro WHERE id = ?";
+        String sql = "SELECT * FROM passageiro WHERE id = ?";
 
         //mesma coisa dos de baixo
         try(Connection conn = ConnectionFactory.getConnection();
