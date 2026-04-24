@@ -18,7 +18,19 @@ import java.net.InetSocketAddress;
     nome VARCHAR(100) NOT NULL,
     cpf VARCHAR(14) NOT NULL
   );
+
+ CREATE TABLE aeronave( // segunda tabela
+    id VARCHAR(50) PRIMARY KEY,
+    tipo VARCHAR(100) NOT NULL,
+    capacidadeAssentos INT NOT NULL,
+    modelo VARCHAR(50) NOT NULL
+
+  );
+
+  );
 * */
+
+
 
 //Recomendo vocês usarem Postman para fazer as requisições
 public class Main {
