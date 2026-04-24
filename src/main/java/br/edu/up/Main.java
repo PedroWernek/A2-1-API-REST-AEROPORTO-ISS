@@ -1,6 +1,7 @@
 package br.edu.up;
 
 
+import br.edu.up.controller.AeronaveHandler;
 import br.edu.up.controller.PassageiroHandler;
 import com.sun.net.httpserver.HttpServer;
 
@@ -37,6 +38,7 @@ public class Main {
     public static void main(String[] args) throws Exception{
         HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
         server.createContext("/passageiro", new PassageiroHandler());
+        server.createContext("/aeronave", new AeronaveHandler());
         server.setExecutor(null);
         server.start();
         System.out.println("API rodando em http://localhost:8000");
