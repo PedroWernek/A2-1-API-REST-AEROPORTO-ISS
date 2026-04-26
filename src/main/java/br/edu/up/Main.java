@@ -3,6 +3,7 @@ package br.edu.up;
 
 import br.edu.up.controller.AeronaveHandler;
 import br.edu.up.controller.PassageiroHandler;
+import br.edu.up.controller.VooHandler;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
@@ -27,8 +28,19 @@ import java.net.InetSocketAddress;
     modelo VARCHAR(50) NOT NULL
 
   );
+  
 
-  );
+CREATE TABLE voo (
+    id VARCHAR(50) PRIMARY KEY,
+    origem VARCHAR(100) NOT NULL,
+    destino VARCHAR(100) NOT NULL,
+    dataHoraVoo VARCHAR(50) NOT NULL,
+    assentosDisponiveis INT,
+    FOREIGN KEY (aeronaveId) REFERENCES aeronave(id)
+
+);
+
+
 * */
 
 
@@ -39,6 +51,7 @@ public class Main {
         HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
         server.createContext("/passageiro", new PassageiroHandler());
         server.createContext("/aeronave", new AeronaveHandler());
+        server.createContext("/voo", new VooHandler());
         server.setExecutor(null);
         server.start();
         System.out.println("API rodando em http://localhost:8000");
