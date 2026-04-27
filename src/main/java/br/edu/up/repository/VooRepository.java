@@ -21,7 +21,7 @@ CREATE TABLE voo (
     destino VARCHAR(100) NOT NULL,
     dataHoraVoo VARCHAR(50) NOT NULL,
     assentosDisponiveis INT,
-    FOREIGN KEY (aeronaveId) REFERENCES aeronave(id)
+    FOREIGN KEY (id) REFERENCES aeronave(id)
 
 );
 * */
@@ -60,6 +60,7 @@ public class VooRepository {
 	public List<Voo> listar() throws SQLException {
         List<Voo> lista = new ArrayList<>();
         String sql = "SELECT * FROM voo";
+        AeronaveRepository r = new AeronaveRepository();
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -70,7 +71,7 @@ public class VooRepository {
 
             while (rs.next()) {
                 //busca a aeronave pelo id no banco, e joga o objeto dela dentro de "aero"
-                Aeronave aero = buscarAeronaveVoo(rs.getString("aeronave_id"));
+                Aeronave aero = r.buscarPorId(rs.getString("aeronave_id"));
 
                 Voo p = new Voo(
                         rs.getString("id"),
@@ -90,7 +91,9 @@ public class VooRepository {
 
    
 	public Voo buscarPorId(String id) throws SQLException {
-        String sql = "SELECT * FROM voo WHERE id = ?";
+        AeronaveRepository r = new AeronaveRepository();
+		
+		String sql = "SELECT * FROM voo WHERE id = ?";
         
       //mesma coisa dos de baixo
         try(Connection conn = ConnectionFactory.getConnection();
@@ -102,7 +105,7 @@ public class VooRepository {
             try(ResultSet rs = stmt.executeQuery()) {
                 if(rs.next()) {
                     //pra buscar o voo e trazer o objeto correto de aeronave, estou dizendo que "aero" vai receber o resultado do método "buscarAeronaveVoo"
-                    Aeronave aero = buscarAeronaveVoo(rs.getString("aeronave_id"));
+                    Aeronave aero = r.buscarPorId(rs.getString("aeronave_id"));
                     return new Voo(
                         rs.getString("id"),
                         rs.getString("origem"),
@@ -117,7 +120,7 @@ public class VooRepository {
         return null;
     }
 	
-	//criado esse método auxiliar pra conseguir buscar a aeronave correspondente ao voo
+	/*//criado esse método auxiliar pra conseguir buscar a aeronave correspondente ao voo
 	private Aeronave buscarAeronaveVoo(String idAeronave) throws SQLException {
         String sql = "SELECT * FROM aeronave WHERE id = ?";
         try (Connection conn = ConnectionFactory.getConnection();
@@ -135,7 +138,7 @@ public class VooRepository {
             }
         }
         return null;
-    }
+    }*/
 
     public void atualizar(Voo v) throws SQLException {
         String sql = "UPDATE voo SET origem = ?, destino = ?, dataHoraVoo = ?, assentosDisponiveis = ?, aeronave_id = ? WHERE id = ?";

@@ -36,7 +36,7 @@ CREATE TABLE voo (
     destino VARCHAR(100) NOT NULL,
     dataHoraVoo VARCHAR(50) NOT NULL,
     assentosDisponiveis INT,
-    FOREIGN KEY (aeronaveId) REFERENCES aeronave(id)
+    FOREIGN KEY (id) REFERENCES aeronave(id)
 
 );
 
