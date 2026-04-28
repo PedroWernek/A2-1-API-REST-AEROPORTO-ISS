@@ -2,8 +2,6 @@ package br.edu.up.service;
 
 import br.edu.up.model.Aeronave;
 import br.edu.up.repository.AeronaveRepository;
-
-import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 

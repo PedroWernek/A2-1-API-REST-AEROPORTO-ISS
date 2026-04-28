@@ -1,7 +1,6 @@
 package br.edu.up.repository;
 
 import br.edu.up.model.Aeronave;
-import br.edu.up.model.Passageiro;
 import br.edu.up.repository.connection.ConnectionFactory;
 
 import java.sql.Connection;
@@ -61,7 +60,7 @@ public class AeronaveRepository {
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
 
-             //mesma coisa de cima só que aqui eu juá executo a query e
+             //mesma coisa de cima só que aqui eu já executo a query e
              //já pego as informações para que eu possa preencher a lista
              ResultSet rs = stmt.executeQuery()) {
 

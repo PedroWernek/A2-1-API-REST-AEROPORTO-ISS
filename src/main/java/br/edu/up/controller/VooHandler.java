@@ -1,8 +1,6 @@
 package br.edu.up.controller;
 
-import br.edu.up.model.Passageiro;
 import br.edu.up.model.Voo;
-import br.edu.up.service.PassageiroService;
 import br.edu.up.service.VooService;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
