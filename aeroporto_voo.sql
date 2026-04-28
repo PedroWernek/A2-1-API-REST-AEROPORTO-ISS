@@ -23,15 +23,15 @@ DROP TABLE IF EXISTS `voo`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `voo` (
-  `id` varchar(9) NOT NULL,
+  `id` varchar(50) NOT NULL,
   `origem` varchar(100) NOT NULL,
   `destino` varchar(100) NOT NULL,
   `dataHoraVoo` varchar(50) NOT NULL,
   `assentosDisponiveis` int DEFAULT NULL,
-  `aeronave_id` varchar(9) DEFAULT NULL,
+  `aeronave_id` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_voo_aeronave` (`aeronave_id`),
-  CONSTRAINT `fk_voo_aeronave` FOREIGN KEY (`aeronave_id`) REFERENCES `aeronave` (`id`)
+  KEY `aeronave_id` (`aeronave_id`),
+  CONSTRAINT `voo_ibfk_1` FOREIGN KEY (`aeronave_id`) REFERENCES `aeronave` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -41,7 +41,7 @@ CREATE TABLE `voo` (
 
 LOCK TABLES `voo` WRITE;
 /*!40000 ALTER TABLE `voo` DISABLE KEYS */;
-INSERT INTO `voo` VALUES ('VOO000001','Curitiba','São Paulo','2026-05-15 10:00',150,'AERO00001'),('VOO000002','Rio de Janeiro','Brasília','2026-05-16 14:30',50,'AERO00002'),('VOO000003','Curitiba','Porto Alegre','2026-05-17 08:00',100,'AERO00004'),('VOO000004','Salvador','Recife','2026-05-18 20:00',30,'AERO00002'),('VOO000005','Manaus','São Paulo','2026-05-19 12:00',200,'AERO00001');
+INSERT INTO `voo` VALUES ('59813d96-73b6-468e-af2b-1dcfcf4e9a60','Rio de Janeiro','Brasília','2026-05-16 14:30',220,'6f7981d8-d3dc-476e-8f2c-ad100c994174'),('71b9c833-6eb3-4ec2-bf9f-b69234f4c4fe','Curitiba','São Paulo','2026-05-15 10:00',180,'185f589f-59a2-49de-8426-96e0f36384f8'),('bdc1bd5e-93d8-48a6-b8c0-418bc0c81b17','Curitiba','Porto Alegre','2026-05-17 08:00',70,'702a69a3-c12b-4b0c-a27c-d9296b58727c');
 /*!40000 ALTER TABLE `voo` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -54,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-27 21:58:13
+-- Dump completed on 2026-04-27 22:46:44

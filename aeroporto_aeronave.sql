@@ -37,7 +37,7 @@ CREATE TABLE `aeronave` (
 
 LOCK TABLES `aeronave` WRITE;
 /*!40000 ALTER TABLE `aeronave` DISABLE KEYS */;
-INSERT INTO `aeronave` VALUES ('AERO00001','Comercial',180,'Boeing 737'),('AERO00002','Regional',70,'Embraer E190'),('AERO00003','Carga',0,'Airbus A330F'),('AERO00004','Comercial',220,'Airbus A321'),('AERO00005','Executivo',12,'Legacy 500');
+INSERT INTO `aeronave` VALUES ('185f589f-59a2-49de-8426-96e0f36384f8','Comercial',220,'Airbus A321'),('6f7981d8-d3dc-476e-8f2c-ad100c994174','Executivo',12,'Legacy 500'),('702a69a3-c12b-4b0c-a27c-d9296b58727c','Carga',4,'Airbus A330F'),('d5790321-f351-43a5-8b3b-448a2e572e69','Regional',70,'Embraer E190');
 /*!40000 ALTER TABLE `aeronave` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -50,4 +50,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-27 21:58:12
+-- Dump completed on 2026-04-27 22:46:44

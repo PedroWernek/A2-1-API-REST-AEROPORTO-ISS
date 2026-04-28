@@ -36,7 +36,7 @@ CREATE TABLE `passageiro` (
 
 LOCK TABLES `passageiro` WRITE;
 /*!40000 ALTER TABLE `passageiro` DISABLE KEYS */;
-INSERT INTO `passageiro` VALUES ('PASS00001','João Silva Santos','123.456.789-00'),('PASS00002','Maria Oliveira Souza','234.567.890-11'),('PASS00003','Carlos Alberto Lima','345.678.901-22');
+INSERT INTO `passageiro` VALUES ('3dfd185f-54df-4f73-9588-f7b576786bdc','João Silva Santos','123.456.789-00'),('4f16c5b2-75db-4f3b-aa24-7c99d4a2f847','Carlos Alberto Lima','345.678.901-22'),('9bbd4a77-5ec1-482c-8055-08531dfee13d','Maria Oliveira Souza','234.567.890-11'),('ee28c59f-b52e-43a6-af76-75d9033d7254','Ana Beatriz Costa','456.789.012-33'),('f372865d-3930-4e4a-8727-d4696554fd6b','Lucas Almeida Dias','567.890.123-44');
 /*!40000 ALTER TABLE `passageiro` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -49,4 +49,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-27 21:58:12
+-- Dump completed on 2026-04-27 22:46:44
