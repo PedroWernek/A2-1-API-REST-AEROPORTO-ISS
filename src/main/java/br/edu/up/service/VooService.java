@@ -3,7 +3,6 @@ package br.edu.up.service;
 import br.edu.up.model.Voo;
 import br.edu.up.repository.VooRepository;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 

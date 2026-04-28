@@ -49,8 +49,10 @@ public class AeronaveHandler implements HttpHandler {
 
     }
 
+    // Funções que fazem a ponte entre o protocolo http e as lógicas
+
     /**Listando TODOS os Aeronaves da Tabela Aeronave
-     * não esqueça que a operação que faz a comunicação com o banco está no repository
+     * a operação que faz a comunicação com o banco está no repository
      */
     private void listar(HttpExchange exchange) throws Exception {
         List<Aeronave> aeronaves = service.listarAeronaves();
@@ -79,23 +81,33 @@ public class AeronaveHandler implements HttpHandler {
     }
 
 
+    // receber id extraído da url
+    // chamar o metodo buscar da service
+    // transformar o objeto Aeronave em json
     private void buscar(HttpExchange exchange, String id) throws Exception {
         Aeronave p = service.buscarAeronavePorId(id);
         enviar(exchange, mapper.writeValueAsString(p));
     }
 
+    // ler corpo da requisição
+    // solicita que a service atualize o registro daquele id
     private void atualizar(HttpExchange exchange, String id) throws Exception {
         Aeronave p = mapper.readValue(exchange.getRequestBody(), Aeronave.class); // pegando o valor da request body
         Aeronave atualizado = service.atualizarAeronave(id,p);
         enviar(exchange, mapper.writeValueAsString(atualizado));
     }
 
+
+    // solicita a service a exclusão da aeronave de determinado id
     private void deletar(HttpExchange exchange, String id) throws Exception {
         Aeronave p = service.deletarAeronave(id);
         enviar(exchange, mapper.writeValueAsString(p));
     }
 
     //----------------------------------Mensagens de Retorno------------------------------------------//
+    
+    // define como 400 o status http de erro
+    // escreve a mensagem de erro no corpo da resposta 
     private void enviarErro(HttpExchange exchange, String erro) throws IOException {
         byte[] resp = erro.getBytes();
         exchange.sendResponseHeaders(400, resp.length);
@@ -104,7 +116,11 @@ public class AeronaveHandler implements HttpHandler {
         os.close();
     }
 
+
     // aquela função que a gente manda para o utilizador se deu certo ou não está marcada com //<- *
+    // mensagem de sucesso
+    // define status como 200
+    // Content-Type", "application/json define o cabeçalho json no fluxo de saída da resposta
     private void enviar(HttpExchange exchange, String resposta) throws IOException {
         exchange.getResponseHeaders().add("Content-Type", "application/json");
         exchange.sendResponseHeaders(200, resposta.getBytes().length);
