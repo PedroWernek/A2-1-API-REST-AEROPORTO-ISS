@@ -48,6 +48,9 @@ public class PassagemService {
             throw new Exception("Passageiro não encontrado");
         }
 
+        p.setVoo(voo);
+        p.setPassageiro(passageiro);
+
         voo.setAssentosDisponiveis(voo.getAssentosDisponiveis() - 1);
         vooRepo.atualizar(voo);
 
@@ -88,8 +91,8 @@ public class PassagemService {
             throw new Exception("Passageiro é obrigatório");
         }
 
-        Voo voo = vooRepo.buscarPorId(p.getVoo().getId());
-        if (voo == null) {
+        Voo novoVoo = vooRepo.buscarPorId(p.getVoo().getId());
+        if (novoVoo == null) {
             throw new Exception("Voo não encontrado");
         }
 
@@ -98,9 +101,26 @@ public class PassagemService {
             throw new Exception("Passageiro não encontrado");
         }
 
+        String idVooAntigo = existente.getVoo().getId();
+        String idNovoVoo = novoVoo.getId();
+
+        if (!idVooAntigo.equals(idNovoVoo)) {
+
+            if (novoVoo.getAssentosDisponiveis() <= 0) {
+                throw new Exception("Não há assentos disponíveis no novo voo escolhido.");
+            }
+
+            Voo vooAntigo = vooRepo.buscarPorId(idVooAntigo);
+            vooAntigo.setAssentosDisponiveis(vooAntigo.getAssentosDisponiveis() + 1);
+            vooRepo.atualizar(vooAntigo);
+
+            novoVoo.setAssentosDisponiveis(novoVoo.getAssentosDisponiveis() - 1);
+            vooRepo.atualizar(novoVoo);
+        }
+
         existente.setAssento(p.getAssento());
         existente.setValor(p.getValor());
-        existente.setVoo(voo);
+        existente.setVoo(novoVoo);
         existente.setPassageiro(passageiro);
 
         repo.atualizar(existente);

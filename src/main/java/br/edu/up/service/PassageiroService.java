@@ -18,6 +18,9 @@ public class PassageiroService {
         if (p.getCpf() == null || p.getCpf().isEmpty()) {
             throw new Exception("CPF é obrigatório");
         }
+        if(buscarPassageiroPorCPF(p.getCpf()) != null){
+            throw new Exception("CPF já cadastrado");
+        }
 
         p.setId(UUID.randomUUID().toString());
         repo.salvar(p);
@@ -33,6 +36,11 @@ public class PassageiroService {
         if (p == null){
             throw new Exception("Passageiro não encontrado");
         }
+        return p;
+    }
+
+    public Passageiro buscarPassageiroPorCPF(String cpf) throws Exception {
+        Passageiro p = repo.buscarPorCPF(cpf);
         return p;
     }
 

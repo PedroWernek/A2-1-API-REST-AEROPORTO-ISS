@@ -126,5 +126,29 @@ public class PassageiroRepository {
         }
     }
 
+    public Passageiro buscarPorCPF(String cpf) throws SQLException{
+        String sql = "SELECT * FROM passageiro WHERE cpf = ?";
+
+        //mesma coisa dos de baixo
+        try(Connection conn = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)){
+
+            stmt.setString(1,cpf);
+
+            //do mesmo jeito que eu "tento" a conexão eu tento ver se retorna
+            try(ResultSet rs = stmt.executeQuery()) {
+                if(rs.next()) {
+                    return new Passageiro(
+                            rs.getString("id"),
+                            rs.getString("nome"),
+                            rs.getString("cpf")
+                    );
+                }
+            }
+        }
+
+        //se não retorno NULL
+        return null;
+    }
 }
 

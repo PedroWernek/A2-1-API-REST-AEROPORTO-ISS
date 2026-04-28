@@ -3,11 +3,11 @@ package br.edu.up;
 
 import br.edu.up.controller.AeronaveHandler;
 import br.edu.up.controller.PassageiroHandler;
+import br.edu.up.controller.PassagemHandler;
 import br.edu.up.controller.VooHandler;
 import com.sun.net.httpserver.HttpServer;
-
-import java.io.IOException;
 import java.net.InetSocketAddress;
+
 //Importem em seu mySQL o
 //'aeroporto_passageiro.sql'
 //que é ondem está nossa base
@@ -52,6 +52,7 @@ public class Main {
         server.createContext("/passageiro", new PassageiroHandler());
         server.createContext("/aeronave", new AeronaveHandler());
         server.createContext("/voo", new VooHandler());
+        server.createContext("/passagem", new PassagemHandler());
         server.setExecutor(null);
         server.start();
         System.out.println("API rodando em http://localhost:8000");

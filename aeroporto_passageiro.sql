@@ -36,6 +36,7 @@ CREATE TABLE `passageiro` (
 
 LOCK TABLES `passageiro` WRITE;
 /*!40000 ALTER TABLE `passageiro` DISABLE KEYS */;
+INSERT INTO `passageiro` VALUES ('PASS00001','João Silva Santos','123.456.789-00'),('PASS00002','Maria Oliveira Souza','234.567.890-11'),('PASS00003','Carlos Alberto Lima','345.678.901-22');
 /*!40000 ALTER TABLE `passageiro` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -48,4 +49,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-18 18:13:07
+-- Dump completed on 2026-04-27 21:58:12

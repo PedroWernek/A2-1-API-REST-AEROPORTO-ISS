@@ -1,6 +1,8 @@
 package br.edu.up.service;
 
+import br.edu.up.model.Aeronave;
 import br.edu.up.model.Voo;
+import br.edu.up.repository.AeronaveRepository;
 import br.edu.up.repository.VooRepository;
 
 import java.sql.SQLException;
@@ -10,13 +12,14 @@ import java.util.UUID;
 public class VooService {
 	
 	private final VooRepository repo = new VooRepository();
+    private final AeronaveRepository aeroRepo = new AeronaveRepository();
 
     public Voo criarVoo(Voo p) throws Exception {
 
         if (p.getOrigem() == null || p.getOrigem().isEmpty()) {
             throw new Exception("Origem é obrigatório!");
         }
-        
+
         if (p.getDestino() == null || p.getDestino().isEmpty()) {
             throw new Exception("Destino é obrigatório!");
         }
@@ -24,18 +27,26 @@ public class VooService {
         if (p.getDataHoraVoo() == null || p.getDataHoraVoo().isEmpty()) {
             throw new Exception("Data e Hora do Voo é obrigatório!");
         }
-        
-        //Acredito que a única excessão para assentos dispoíveis deve ser se for menor que zero, pq se for zero, quer dizer q n tem mais assentos disponíveis
+
         if (p.getAssentosDisponiveis() < 0) {
             throw new Exception("Assentos Disponíveis não pode ser menor que zero!");
         }
-        
-        if (p.getAeronave() == null) {
+
+        if (p.getAeronave() == null || p.getAeronave().getId() == null) {
             throw new Exception("Aeronave é obrigatório!");
         }
 
+        Aeronave aeronave = aeroRepo.buscarPorId(p.getAeronave().getId());
+
+        if (aeronave == null) {
+            throw new Exception("Aeronave não encontrada!");
+        }
+
+        p.setAeronave(aeronave);
         p.setId(UUID.randomUUID().toString());
+
         repo.salvar(p);
+
         return p;
     }
 

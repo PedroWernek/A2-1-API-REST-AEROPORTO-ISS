@@ -16,28 +16,29 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `passageiro`
+-- Table structure for table `aeronave`
 --
 
-DROP TABLE IF EXISTS `passageiro`;
+DROP TABLE IF EXISTS `aeronave`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `passageiro` (
+CREATE TABLE `aeronave` (
   `id` varchar(50) NOT NULL,
-  `nome` varchar(100) NOT NULL,
-  `cpf` varchar(14) NOT NULL,
+  `tipo` varchar(100) NOT NULL,
+  `capacidadeAssentos` int NOT NULL,
+  `modelo` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `passageiro`
+-- Dumping data for table `aeronave`
 --
 
-LOCK TABLES `passageiro` WRITE;
-/*!40000 ALTER TABLE `passageiro` DISABLE KEYS */;
-INSERT INTO `passageiro` VALUES ('3dfd185f-54df-4f73-9588-f7b576786bdc','João Silva Santos','123.456.789-00'),('4f16c5b2-75db-4f3b-aa24-7c99d4a2f847','Carlos Alberto Lima','345.678.901-22'),('9bbd4a77-5ec1-482c-8055-08531dfee13d','Maria Oliveira Souza','234.567.890-11'),('ee28c59f-b52e-43a6-af76-75d9033d7254','Ana Beatriz Costa','456.789.012-33'),('f372865d-3930-4e4a-8727-d4696554fd6b','Lucas Almeida Dias','567.890.123-44');
-/*!40000 ALTER TABLE `passageiro` ENABLE KEYS */;
+LOCK TABLES `aeronave` WRITE;
+/*!40000 ALTER TABLE `aeronave` DISABLE KEYS */;
+INSERT INTO `aeronave` VALUES ('185f589f-59a2-49de-8426-96e0f36384f8','Comercial',220,'Airbus A321'),('6f7981d8-d3dc-476e-8f2c-ad100c994174','Executivo',12,'Legacy 500'),('702a69a3-c12b-4b0c-a27c-d9296b58727c','Carga',4,'Airbus A330F'),('d5790321-f351-43a5-8b3b-448a2e572e69','Regional',70,'Embraer E190');
+/*!40000 ALTER TABLE `aeronave` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
