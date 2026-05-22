@@ -1,12 +1,13 @@
-import { useState, FormEvent } from "react";
-import { aeronaveService } from "../../services/aeronaveService";
+import { useState, FormEvent, useEffect } from "react";
+import { aeronaveService, Aeronave } from "../../../services/aeronaveService";
 
 interface AeronaveFormProps {
+  aeronaveEditando?: Aeronave | null;
   onSuccess: () => void;
   onCancel: () => void;
 }
 
-export function AeronaveForm({ onSuccess, onCancel }: AeronaveFormProps) {
+export function AeronaveForm({ aeronaveEditando, onSuccess, onCancel }: AeronaveFormProps) {
   const [formData, setFormData] = useState({
     modelo: "",
     tipo: "",
@@ -14,11 +15,25 @@ export function AeronaveForm({ onSuccess, onCancel }: AeronaveFormProps) {
   });
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (aeronaveEditando) {
+      setFormData({
+        modelo: aeronaveEditando.modelo,
+        tipo: aeronaveEditando.tipo,
+        capacidadeAssentos: aeronaveEditando.capacidadeAssentos,
+      });
+    }
+  }, [aeronaveEditando]);
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await aeronaveService.criar(formData);
+      if (aeronaveEditando?.id) {
+        await aeronaveService.atualizar(aeronaveEditando.id, formData);
+      } else {
+        await aeronaveService.criar(formData);
+      }
       onSuccess();
     } catch (error) {
       console.error(error);
@@ -74,7 +89,7 @@ export function AeronaveForm({ onSuccess, onCancel }: AeronaveFormProps) {
           disabled={loading}
           className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50"
         >
-          {loading ? "A Guardar..." : "Guardar"}
+          {loading ? "A Guardar..." : aeronaveEditando ? "Atualizar" : "Guardar"}
         </button>
       </div>
     </form>

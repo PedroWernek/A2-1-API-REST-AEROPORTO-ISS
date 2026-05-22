@@ -1,4 +1,5 @@
-const BASE_URL = "http://localhost:8000";
+// Removemos o http://localhost:8000 daqui, o Vite tratará disso via Proxy
+const BASE_URL = "";
 
 export const api = {
   get: async (endpoint: string) => {
