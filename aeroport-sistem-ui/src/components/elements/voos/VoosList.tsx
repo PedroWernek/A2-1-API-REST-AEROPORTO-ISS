@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Plus, MoreHorizontal, Loader2 } from "lucide-react";
+import { Plus, Loader2, Pencil, Trash2 } from "lucide-react";
 import { vooService, Voo } from "../../../services/vooService";
 import { Modal } from "../ui/Modal";
 import { VooForm } from "./VooForm";
