@@ -48,11 +48,9 @@ CREATE TABLE voo (
 //Recomendo vocês usarem Postman para fazer as requisições
 public class Main {
     public static void main(String[] args) throws Exception{
-        // Pega a porta do Render ou usa 8000 se for no seu computador
         String portStr = System.getenv("PORT");
         int port = (portStr != null) ? Integer.parseInt(portStr) : 8000;
 
-        // "0.0.0.0" permite que a internet chegue no seu backend
         HttpServer server = HttpServer.create(new InetSocketAddress("0.0.0.0", port), 0);
         server.createContext("/passageiro", new PassageiroHandler());
         server.createContext("/aeronave", new AeronaveHandler());
