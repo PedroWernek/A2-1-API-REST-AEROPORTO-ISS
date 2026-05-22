@@ -52,10 +52,37 @@ public class Main {
         int port = (portStr != null) ? Integer.parseInt(portStr) : 8000;
 
         HttpServer server = HttpServer.create(new InetSocketAddress("0.0.0.0", port), 0);
-        server.createContext("/passageiro", new PassageiroHandler());
-        server.createContext("/aeronave", new AeronaveHandler());
-        server.createContext("/voo", new VooHandler());
-        server.createContext("/passagem", new PassagemHandler());
+
+        // O filtro mágico que diz para o navegador: "Pode deixar o Front-end acessar!"
+        Filter corsFilter = new Filter() {
+            @Override
+            public void doFilter(HttpExchange exchange, Chain chain) throws IOException {
+                Headers headers = exchange.getResponseHeaders();
+                headers.add("Access-Control-Allow-Origin", "*"); // Permite qualquer site (Vercel)
+                headers.add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+                headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+                // O navegador manda um 'OPTIONS' antes para ver se é seguro. 
+                // Se for isso, devolvemos um "Tudo Certo" (204) na hora.
+                if (exchange.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
+                    exchange.sendResponseHeaders(204, -1);
+                    return;
+                }
+                chain.doFilter(exchange);
+            }
+
+            @Override
+            public String description() {
+                return "CORS Filter";
+            }
+        };
+
+        // Adicionamos o filtro em todas as rotas do seu sistema
+        server.createContext("/passageiro", new PassageiroHandler()).getFilters().add(corsFilter);
+        server.createContext("/aeronave", new AeronaveHandler()).getFilters().add(corsFilter);
+        server.createContext("/voo", new VooHandler()).getFilters().add(corsFilter);
+        server.createContext("/passagem", new PassagemHandler()).getFilters().add(corsFilter);
+        
         server.setExecutor(null);
         server.start();
         System.out.println("API rodando na porta: " + port);
