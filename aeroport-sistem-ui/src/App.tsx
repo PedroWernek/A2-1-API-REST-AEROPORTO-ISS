@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Sidebar } from "./components/layout/Sidebar";
-import { VoosList } from "./components/voos/VoosList";
-import { AeronavesList } from "./components/aeronaves/AeronavesList";
-import { PassageirosList } from "./components/passageiros/PassageirosList";
-import { PassagensList } from "./components/passagens/PassagensList";
+import { VoosList } from "./components/elements/voos/VoosList";
+import { AeronavesList } from "./components/elements/aeronaves/AeronavesList";
+import { PassageirosList } from "./components/elements/passageiros/PassageirosList";
+import { PassagensList } from "./components/elements/passagens/PassagensList";
 
 function App() {
   const [activeTab, setActiveTab] = useState("voos");

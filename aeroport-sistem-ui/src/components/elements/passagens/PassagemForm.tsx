@@ -1,7 +1,7 @@
 import { useState, useEffect, FormEvent } from "react";
-import { passagemService } from "../../services/passagemService";
-import { passageiroService, Passageiro } from "../../services/passageiroService";
-import { vooService, Voo } from "../../services/vooService";
+import { passagemService } from "../../../services/passagemService";
+import { passageiroService, Passageiro } from "../../../services/passageiroService";
+import { vooService, Voo } from "../../../services/vooService";
 
 interface PassagemFormProps {
   onSuccess: () => void;
