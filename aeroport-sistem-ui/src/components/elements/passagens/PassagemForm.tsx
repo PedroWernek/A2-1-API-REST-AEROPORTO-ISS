@@ -1,5 +1,5 @@
 import { useState, useEffect, FormEvent } from "react";
-import { passagemService, Passagem } from "../../../services/passagemService";
+import { passagemService } from "../../../services/passagemService";
 import { passageiroService, Passageiro } from "../../../services/passageiroService";
 import { vooService, Voo } from "../../../services/vooService";
 

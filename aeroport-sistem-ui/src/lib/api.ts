@@ -1,5 +1,4 @@
-// Removemos o http://localhost:8000 daqui, o Vite tratará disso via Proxy
-const BASE_URL = "";
+const BASE_URL = "https://sistema-aeroporto.onrender.com";
 
 export const api = {
   get: async (endpoint: string) => {
