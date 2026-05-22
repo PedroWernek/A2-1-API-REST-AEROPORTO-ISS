@@ -1,15 +1,16 @@
 package br.edu.up;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+
+import com.sun.net.httpserver.Filter;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpServer;
+
 import br.edu.up.controller.AeronaveHandler;
 import br.edu.up.controller.PassageiroHandler;
 import br.edu.up.controller.PassagemHandler;
 import br.edu.up.controller.VooHandler;
-import com.sun.net.httpserver.Filter;
-import com.sun.net.httpserver.Headers;
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpServer;
-import java.io.IOException;
-import java.net.InetSocketAddress;
 
 //Importem em seu mySQL o
 //'aeroporto_passageiro.sql'
@@ -56,21 +57,22 @@ public class Main {
 
         HttpServer server = HttpServer.create(new InetSocketAddress("0.0.0.0", port), 0);
 
-        // O filtro mágico que diz para o navegador: "Pode deixar o Front-end acessar!"
+        // O filtro mágico que diz para o navegador: "Pode deixar o Front-end acessar!
         Filter corsFilter = new Filter() {
             @Override
             public void doFilter(HttpExchange exchange, Chain chain) throws IOException {
-                Headers headers = exchange.getResponseHeaders();
-                headers.add("Access-Control-Allow-Origin", "*"); // Permite qualquer site (Vercel)
-                headers.add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-                headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization");
+                // Adiciona os headers de permissão em TODA resposta
+                exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+                exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+                exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
-                // O navegador manda um 'OPTIONS' antes para ver se é seguro. 
-                // Se for isso, devolvemos um "Tudo Certo" (204) na hora.
-                if (exchange.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
+                // SE a requisição for do tipo OPTIONS (pré-voo do navegador), 
+                // responda com sucesso (204) e encerre aqui, não tente processar o JSON.
+                if ("OPTIONS".equalsIgnoreCase(exchange.getRequestMethod())) {
                     exchange.sendResponseHeaders(204, -1);
                     return;
                 }
+                
                 chain.doFilter(exchange);
             }
 
