@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Plus, Loader2, Pencil, Trash2 } from "lucide-react";
 import { passagemService, Passagem } from "../../../services/passagemService";
-import { Modal } from "../ui/Modal";
+import { Modal } from "../../ui/Modal";
 import { PassagemForm } from "./PassagemForm";
 
 export function PassagensList() {
