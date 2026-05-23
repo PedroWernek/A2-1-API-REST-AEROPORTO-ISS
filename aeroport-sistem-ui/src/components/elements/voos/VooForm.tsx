@@ -1,14 +1,14 @@
-import { aeronaveService, type Aeronave } from "@/services/aeronaveService";
-import { vooService } from "@/services/vooService";
-import { useEffect, useState, type FormEvent } from "react";
-
+import { useState, useEffect, FormEvent } from "react";
+import { vooService, Voo } from "../../../services/vooService";
+import { aeronaveService, Aeronave } from "../../../services/aeronaveService";
 
 interface VooFormProps {
+  vooEditando?: Voo | null;
   onSuccess: () => void;
   onCancel: () => void;
 }
 
-export function VooForm({ onSuccess, onCancel }: VooFormProps) {
+export function VooForm({ vooEditando, onSuccess, onCancel }: VooFormProps) {
   const [aeronaves, setAeronaves] = useState<Aeronave[]>([]);
   const [formData, setFormData] = useState({
     origem: "",
@@ -20,16 +20,27 @@ export function VooForm({ onSuccess, onCancel }: VooFormProps) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    aeronaveService.listar()
-      .then(setAeronaves)
-      .catch(console.error);
-  }, []);
+    aeronaveService.listar().then(setAeronaves).catch(console.error);
+    if (vooEditando) {
+      setFormData({
+        origem: vooEditando.origem,
+        destino: vooEditando.destino,
+        dataHoraVoo: vooEditando.dataHoraVoo,
+        assentosDisponiveis: vooEditando.assentosDisponiveis,
+        aeronaveId: vooEditando.aeronaveId,
+      });
+    }
+  }, [vooEditando]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await vooService.criar(formData);
+      if (vooEditando?.id) {
+        await vooService.atualizar(vooEditando.id, formData);
+      } else {
+        await vooService.criar(formData);
+      }
       onSuccess();
     } catch (error) {
       console.error(error);
@@ -46,76 +57,26 @@ export function VooForm({ onSuccess, onCancel }: VooFormProps) {
           required
           value={formData.aeronaveId}
           onChange={(e) => setFormData({ ...formData, aeronaveId: e.target.value })}
-          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900"
+          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-slate-900"
         >
-          <option value="" disabled>Selecione uma aeronave...</option>
-          {aeronaves.map((aeronave) => (
-            <option key={aeronave.id} value={aeronave.id}>
-              {aeronave.modelo} ({aeronave.capacidadeAssentos} assentos)
-            </option>
+          <option value="">Selecione...</option>
+          {aeronaves.map((a) => (
+            <option key={a.id} value={a.id}>{a.modelo}</option>
           ))}
         </select>
       </div>
       <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700">Origem</label>
-          <input
-            required
-            type="text"
-            value={formData.origem}
-            onChange={(e) => setFormData({ ...formData, origem: e.target.value })}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900"
-          />
-        </div>
-        <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700">Destino</label>
-          <input
-            required
-            type="text"
-            value={formData.destino}
-            onChange={(e) => setFormData({ ...formData, destino: e.target.value })}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900"
-          />
-        </div>
+        <input required placeholder="Origem" value={formData.origem} onChange={(e) => setFormData({ ...formData, origem: e.target.value })} className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
+        <input required placeholder="Destino" value={formData.destino} onChange={(e) => setFormData({ ...formData, destino: e.target.value })} className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
       </div>
       <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700">Data e Hora</label>
-          <input
-            required
-            type="text"
-            placeholder="Ex: 2026-12-01 14:30"
-            value={formData.dataHoraVoo}
-            onChange={(e) => setFormData({ ...formData, dataHoraVoo: e.target.value })}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900"
-          />
-        </div>
-        <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700">Assentos Iniciais</label>
-          <input
-            required
-            type="number"
-            min="1"
-            value={formData.assentosDisponiveis || ""}
-            onChange={(e) => setFormData({ ...formData, assentosDisponiveis: Number(e.target.value) })}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900"
-          />
-        </div>
+        <input required placeholder="Data/Hora" value={formData.dataHoraVoo} onChange={(e) => setFormData({ ...formData, dataHoraVoo: e.target.value })} className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
+        <input required type="number" placeholder="Assentos" value={formData.assentosDisponiveis || ""} onChange={(e) => setFormData({ ...formData, assentosDisponiveis: Number(e.target.value) })} className="rounded-md border border-slate-300 px-3 py-2 text-sm" />
       </div>
       <div className="flex justify-end gap-2 pt-4">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="rounded-md px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
-        >
-          Cancelar
-        </button>
-        <button
-          type="submit"
-          disabled={loading}
-          className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50"
-        >
-          {loading ? "A Guardar..." : "Guardar"}
+        <button type="button" onClick={onCancel} className="text-sm font-medium text-slate-700 px-4 py-2 hover:bg-slate-100 rounded-md">Cancelar</button>
+        <button type="submit" disabled={loading} className="bg-slate-900 text-white px-4 py-2 text-sm rounded-md hover:bg-slate-800 disabled:opacity-50">
+          {loading ? "A Guardar..." : vooEditando ? "Atualizar" : "Guardar"}
         </button>
       </div>
     </form>

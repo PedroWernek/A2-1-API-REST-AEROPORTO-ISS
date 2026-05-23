@@ -1,24 +1,37 @@
-import { passageiroService } from "@/services/passageiroService";
-import { useState, type FormEvent } from "react";
-
+import { useState, FormEvent, useEffect } from "react";
+import { passageiroService, Passageiro } from "../../../services/passageiroService";
 
 interface PassageiroFormProps {
+  passageiroEditando?: Passageiro | null;
   onSuccess: () => void;
   onCancel: () => void;
 }
 
-export function PassageiroForm({ onSuccess, onCancel }: PassageiroFormProps) {
+export function PassageiroForm({ passageiroEditando, onSuccess, onCancel }: PassageiroFormProps) {
   const [formData, setFormData] = useState({
     nome: "",
     cpf: "",
   });
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (passageiroEditando) {
+      setFormData({
+        nome: passageiroEditando.nome,
+        cpf: passageiroEditando.cpf,
+      });
+    }
+  }, [passageiroEditando]);
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await passageiroService.criar(formData);
+      if (passageiroEditando?.id) {
+        await passageiroService.atualizar(passageiroEditando.id, formData);
+      } else {
+        await passageiroService.criar(formData);
+      }
       onSuccess();
     } catch (error) {
       console.error(error);
@@ -44,7 +57,6 @@ export function PassageiroForm({ onSuccess, onCancel }: PassageiroFormProps) {
         <input
           required
           type="text"
-          maxLength={14}
           value={formData.cpf}
           onChange={(e) => setFormData({ ...formData, cpf: e.target.value })}
           className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900"
@@ -63,7 +75,7 @@ export function PassageiroForm({ onSuccess, onCancel }: PassageiroFormProps) {
           disabled={loading}
           className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50"
         >
-          {loading ? "A Guardar..." : "Guardar"}
+          {loading ? "A Guardar..." : passageiroEditando ? "Atualizar" : "Guardar"}
         </button>
       </div>
     </form>
