@@ -1,5 +1,6 @@
-import { useState, FormEvent } from "react";
-import { passageiroService } from "../../services/passageiroService";
+import { passageiroService } from "@/services/passageiroService";
+import { useState, type FormEvent } from "react";
+
 
 interface PassageiroFormProps {
   onSuccess: () => void;

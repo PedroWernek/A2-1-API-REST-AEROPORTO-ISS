@@ -1,5 +1,6 @@
-import { useState, FormEvent } from "react";
-import { aeronaveService } from "../../services/aeronaveService";
+import { aeronaveService } from "@/services/aeronaveService";
+import { useState, type FormEvent } from "react";
+
 
 interface AeronaveFormProps {
   onSuccess: () => void;

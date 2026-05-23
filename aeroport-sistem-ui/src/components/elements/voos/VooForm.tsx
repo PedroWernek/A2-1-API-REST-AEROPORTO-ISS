@@ -1,6 +1,7 @@
-import { useState, useEffect, FormEvent } from "react";
-import { vooService } from "../../services/vooService";
-import { aeronaveService, Aeronave } from "../../services/aeronaveService";
+import { aeronaveService, type Aeronave } from "@/services/aeronaveService";
+import { vooService } from "@/services/vooService";
+import { useEffect, useState, type FormEvent } from "react";
+
 
 interface VooFormProps {
   onSuccess: () => void;

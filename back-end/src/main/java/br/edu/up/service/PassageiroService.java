@@ -1,11 +1,10 @@
 package br.edu.up.service;
 
-import br.edu.up.model.Passageiro;
-import br.edu.up.repository.PassageiroRepository;
-
-import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
+
+import br.edu.up.model.Passageiro;
+import br.edu.up.repository.PassageiroRepository;
 
 public class PassageiroService {
     private final PassageiroRepository repo = new PassageiroRepository();

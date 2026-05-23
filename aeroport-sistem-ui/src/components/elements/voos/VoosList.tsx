@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Plus, MoreHorizontal, Loader2 } from "lucide-react";
-import { vooService, Voo } from "../../services/vooService";
-import { Modal } from "../ui/Modal";
 import { VooForm } from "./VooForm";
+import { vooService, type Voo } from "@/services/vooService";
+import { Modal } from "@/components/ui/Modal";
 
 export function VoosList() {
   const [voos, setVoos] = useState<Voo[]>([]);
