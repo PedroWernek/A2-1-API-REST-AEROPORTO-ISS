@@ -3,8 +3,6 @@ import { Plus, Loader2, Pencil, Trash2 } from "lucide-react";
 import { passagemService, Passagem } from "../../../services/passagemService";
 import { Modal } from "../../ui/Modal";
 import { PassagemForm } from "./PassagemForm";
-import { passagemService, type Passagem } from "@/services/passagemService";
-import { Modal } from "@/components/ui/Modal";
 
 export function PassagensList() {
   const [passagens, setPassagens] = useState<Passagem[]>([]);

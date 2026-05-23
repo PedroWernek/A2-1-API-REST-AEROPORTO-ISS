@@ -3,8 +3,6 @@ import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
 import { aeronaveService, Aeronave } from "../../../services/aeronaveService";
 import { Modal } from "../../ui/Modal";
 import { AeronaveForm } from "./AeronaveForm";
-import { aeronaveService, type Aeronave } from "@/services/aeronaveService";
-import { Modal } from "@/components/ui/Modal";
 
 export function AeronavesList() {
   const [aeronaves, setAeronaves] = useState<Aeronave[]>([]);

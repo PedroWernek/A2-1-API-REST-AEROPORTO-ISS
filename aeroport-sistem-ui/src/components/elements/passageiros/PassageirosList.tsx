@@ -3,8 +3,7 @@ import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
 import { passageiroService, Passageiro } from "../../../services/passageiroService";
 import { Modal } from "../../ui/Modal";
 import { PassageiroForm } from "./PassageiroForm";
-import { passageiroService, type Passageiro } from "@/services/passageiroService";
-import { Modal } from "@/components/ui/Modal";
+
 
 export function PassageirosList() {
   const [passageiros, setPassageiros] = useState<Passageiro[]>([]);
