@@ -128,3 +128,24 @@
     @apply font-sans;
     }
 }
+
+body {
+  font-family: 'Inter', sans-serif;
+  /* Uma fonte sans-serif moderna ajuda muito */
+  line-height: 1.6;
+  /* Espaçamento entre linhas melhora a leitura */
+  color: #333;
+  /* Um cinza escuro é melhor que preto puro */
+}
+
+input,
+select,
+textarea {
+  font-size: 16px;
+  /* Em mobile, evita que o navegador dê zoom automaticamente */
+  padding: 10px;
+  /* Espaço interno para o texto não ficar "colado" */
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 100%;
+}
