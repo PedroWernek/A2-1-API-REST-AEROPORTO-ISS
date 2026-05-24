@@ -1,14 +1,15 @@
 package br.edu.up.controller;
 
-import br.edu.up.model.Passageiro;
-import br.edu.up.service.PassageiroService;
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import tools.jackson.databind.ObjectMapper;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+
+import br.edu.up.model.Passageiro;
+import br.edu.up.service.PassageiroService;
+import tools.jackson.databind.ObjectMapper;
 
 public class PassageiroHandler implements HttpHandler {
     private final ObjectMapper mapper = new ObjectMapper();
@@ -44,6 +45,7 @@ public class PassageiroHandler implements HttpHandler {
             }
 
         } catch (Exception e) {
+            e.printStackTrace();
             enviarErro(exchange, e.getMessage());
         }
 

@@ -1,14 +1,15 @@
 package br.edu.up.controller;
 
-import br.edu.up.model.Passagem;
-import br.edu.up.service.PassagemService;
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import tools.jackson.databind.ObjectMapper;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+
+import br.edu.up.model.Passagem;
+import br.edu.up.service.PassagemService;
+import tools.jackson.databind.ObjectMapper;
 
 public class PassagemHandler implements HttpHandler {
 
@@ -47,8 +48,9 @@ public class PassagemHandler implements HttpHandler {
 	        }
 
 	    } catch (Exception e) {
-	        enviarErro(exchange, e.getMessage());
-	    }
+									e.printStackTrace();
+									enviarErro(exchange, e.getMessage());
+							}
         }
 
 		/**Listando TODAS as passagens da Tabela passagens

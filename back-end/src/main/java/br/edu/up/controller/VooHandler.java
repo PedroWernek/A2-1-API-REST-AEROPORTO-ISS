@@ -44,8 +44,9 @@ public class VooHandler implements HttpHandler {
 	            }
 
 	        } catch (Exception e) {
-	            enviarErro(exchange, e.getMessage());
-	        }
+									e.printStackTrace();
+									enviarErro(exchange, e.getMessage());
+							}
 			
 		}
 		
