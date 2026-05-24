@@ -90,6 +90,6 @@ public class Main {
         
         server.setExecutor(null);
         server.start();
-        System.out.println("API rodando na porta: " + port);
+        System.out.println("http://localhost:" + port);
     }
 }
