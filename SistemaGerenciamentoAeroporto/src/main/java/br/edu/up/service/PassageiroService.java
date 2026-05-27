@@ -8,6 +8,7 @@ import br.edu.up.repository.PassageiroRepository;
 
 public class PassageiroService {
     private final PassageiroRepository repo = new PassageiroRepository();
+    private final EnderecoRepository endRepo = new EnderecoRepository();
 
     public Passageiro criarPassageiro(Passageiro p) throws Exception {
 
@@ -20,9 +21,14 @@ public class PassageiroService {
         if(buscarPassageiroPorCPF(p.getCpf()) != null){
             throw new Exception("CPF já cadastrado");
         }
+        if(p.getEndereco() == null) {
+            throw new Exception("Endereco é obrigatório");
+        }
+
 
         p.setId(UUID.randomUUID().toString());
         repo.salvar(p);
+
         return p;
     }
 

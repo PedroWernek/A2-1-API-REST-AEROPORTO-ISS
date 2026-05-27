@@ -10,21 +10,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-//Comando para criar a tabela:
-/*
-    USE aeroporto;
-
-  CREATE TABLE aeronave( // segunda tabela
-    id VARCHAR(50) PRIMARY KEY,
-    tipo VARCHAR(100) NOT NULL,
-    capacidadeAssentos INT NOT NULL,
-    modelo VARCHAR(50) NOT NULL
-
-  );
-* */
-
 public class AeronaveRepository {
 
 
