@@ -10,25 +10,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-//Comando para criar a tabela:
-/*
-    USE aeroporto;
-
-    CREATE TABLE passageiro(
-        id VARCHAR(50) PRIMARY KEY,
-        nome VARCHAR(100) NOT NULL,
-        cpf VARCHAR(14) NOT NULL
-    );
-* */
 public class PassageiroRepository {
 
 
     public void salvar(Passageiro p) throws SQLException {
 
         //String com o script sql que será executado no banco
-        String sql = "INSERT INTO passageiro (id, nome, cpf) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO passageiro (id, nome, cpf, id_endereco) VALUES (?, ?, ?, ?)";
 
         //estou usando aquela fábrica já criada
         try (
@@ -43,6 +31,7 @@ public class PassageiroRepository {
             stmt.setString(1, p.getId());//primeiro ?
             stmt.setString(2, p.getNome());//segundo ?
             stmt.setString(3, p.getCpf());//terceiro ?
+            stmt.setString(4, p.getEdereco().getId());//terceiro ?
 
             //mandando as informações
             stmt.executeUpdate();

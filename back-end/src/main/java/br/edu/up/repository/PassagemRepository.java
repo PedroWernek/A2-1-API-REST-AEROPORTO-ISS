@@ -12,24 +12,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-
-//Comando para criar a tabela:
-/*
-    USE aeroporto;
-
-  CREATE TABLE passagem(
-    id VARCHAR(50) PRIMARY KEY,
-    assento VARCHAR(50) NOT NULL,
-    valor DOUBLE NOT NULL,
-
-    voo_id VARCHAR(50) NOT NULL,
-    passageiro_id VARCHAR(50) NOT NULL
-
-  );
-* */
-
 public class PassagemRepository {
 
     public void salvar(Passagem pa) throws SQLException {
