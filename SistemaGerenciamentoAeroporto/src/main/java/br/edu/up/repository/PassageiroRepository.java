@@ -1,5 +1,6 @@
 package br.edu.up.repository;
 
+import br.edu.up.model.Endereco;
 import br.edu.up.model.Passageiro;
 import br.edu.up.repository.connection.ConnectionFactory;
 
@@ -12,132 +13,75 @@ import java.util.List;
 
 public class PassageiroRepository {
 
-
     public void salvar(Passageiro p) throws SQLException {
-
-        //String com o script sql que será executado no banco
-        String sql = "INSERT INTO passageiro (id, nome, cpf, id_endereco) VALUES (?, ?, ?, ?)";
-
-        //estou usando aquela fábrica já criada
-        try (
-                //pegando a conexão com o banco via ConnectionFactory
-                Connection conn = ConnectionFactory.getConnection();
-
-                //preparando a declaração que é o ‘script’ lá em cima
-                //para que eu possa inserir as informações antes de mandar de volta
-                PreparedStatement stmt = conn.prepareStatement(sql))
-        {
-            //inserindo as informações dentro dos ? na ‘string’ ‘script’
-            stmt.setString(1, p.getId());//primeiro ?
-            stmt.setString(2, p.getNome());//segundo ?
-            stmt.setString(3, p.getCpf());//terceiro ?
-            stmt.setString(4, p.getEndereco().getId());//terceiro ?
-
-            //mandando as informações
-            stmt.executeUpdate();
-        }
-    }
-
-    public List<Passageiro> listar() throws SQLException {
-        List<Passageiro> lista = new ArrayList<>();
-        String sql = "SELECT * FROM passageiro";
-
+        String sql = "INSERT INTO passageiro (id, nome, cpf, endereco_id) VALUES (?, ?, ?, ?)";
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-
-             //mesma coisa de cima só que aqui eu juá executo a query e
-             //já pego as informações para que eu possa preencher a lista
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                Passageiro p = new Passageiro(
-                        rs.getString("id"),
-                        rs.getString("nome"),
-                        rs.getString("cpf")
-                );
-                lista.add(p);
-            }
-
-        }
-        return lista;
-    }
-
-    public Passageiro buscarPorId(String id) throws SQLException {
-        String sql = "SELECT * FROM passageiro WHERE id = ?";
-
-        //mesma coisa dos de baixo
-        try(Connection conn = ConnectionFactory.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)){
-
-            stmt.setString(1,id);
-
-            //do mesmo jeito que eu "tento" a conexão eu tento ver se retorna
-            try(ResultSet rs = stmt.executeQuery()) {
-                if(rs.next()) {
-                    return new Passageiro(
-                            rs.getString("id"),
-                            rs.getString("nome"),
-                            rs.getString("cpf")
-                    );
-                }
-            }
-        }
-
-        //se não retorno NULL
-        return null;
-    }
-
-    public void atualizar(Passageiro p) throws SQLException {
-        String sql = "UPDATE passageiro SET nome = ?, cpf = ? WHERE id = ?";
-
-        try(Connection conn = ConnectionFactory.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)){
-
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, p.getId());
             stmt.setString(2, p.getNome());
             stmt.setString(3, p.getCpf());
 
+            stmt.setString(4, p.getEndereco() != null ? p.getEndereco().getId() : null);
+            stmt.executeUpdate();
+        }
+    }
+
+    public void atualizar(Passageiro p) throws SQLException {
+        String sql = "UPDATE passageiro SET nome = ?, cpf = ?, endereco_id = ? WHERE id = ?";
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, p.getNome());
+            stmt.setString(2, p.getCpf());
+            stmt.setString(3, p.getEndereco() != null ? p.getEndereco().getId() : null);
+            stmt.setString(4, p.getId());
             stmt.executeUpdate();
         }
     }
 
     public void deletar(String id) throws SQLException {
         String sql = "DELETE FROM passageiro WHERE id = ?";
-
-        //mesma coisa dos de baixo
-        try(Connection conn = ConnectionFactory.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)){
-
-            stmt.setString(1,id);
-
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, id);
             stmt.executeUpdate();
-
         }
     }
 
-    public Passageiro buscarPorCPF(String cpf) throws SQLException{
-        String sql = "SELECT * FROM passageiro WHERE cpf = ?";
-
-        //mesma coisa dos de baixo
-        try(Connection conn = ConnectionFactory.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)){
-
-            stmt.setString(1,cpf);
-
-            //do mesmo jeito que eu "tento" a conexão eu tento ver se retorna
-            try(ResultSet rs = stmt.executeQuery()) {
-                if(rs.next()) {
-                    return new Passageiro(
-                            rs.getString("id"),
-                            rs.getString("nome"),
-                            rs.getString("cpf")
-                    );
-                }
+    public Passageiro buscarPorId(String id) throws SQLException {
+        String sql = "SELECT * FROM passageiro WHERE id = ?";
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) return mapearPassageiro(rs);
             }
         }
-
-        //se não retorno NULL
         return null;
     }
-}
 
+    public List<Passageiro> listar() throws SQLException {
+        List<Passageiro> lista = new ArrayList<>();
+        String sql = "SELECT * FROM passageiro";
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) lista.add(mapearPassageiro(rs));
+        }
+        return lista;
+    }
+
+    private Passageiro mapearPassageiro(ResultSet rs) throws SQLException {
+        Passageiro p = new Passageiro();
+        p.setId(rs.getString("id"));
+        p.setNome(rs.getString("nome"));
+        p.setCpf(rs.getString("cpf"));
+
+        String enderecoId = rs.getString("endereco_id");
+        if (enderecoId != null) {
+            Endereco e = new Endereco();
+            e.setId(enderecoId);
+            p.setEndereco(e);
+        }
+        return p;
+    }
+}

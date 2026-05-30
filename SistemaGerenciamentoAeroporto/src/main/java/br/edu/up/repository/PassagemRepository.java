@@ -15,21 +15,10 @@ import java.util.List;
 public class PassagemRepository {
 
     public void salvar(Passagem pa) throws SQLException {
-        //String com o script sql que será executado no banco
-        
         String sql = "INSERT INTO passagem (id, assento, valor, voo_id, passageiro_id) VALUES (?, ?, ?, ?, ?)";
-        
-        
-        //pegando a conexão com o banco via ConnectionFactory
 
-        try (
-            Connection conn = ConnectionFactory.getConnection();
-
-            //preparando a declaração que é o ‘script’ lá em cima
-            //para que eu possa inserir as informações antes de mandar de volta
- 
-            PreparedStatement stmt = conn.prepareStatement(sql)
-        )
+        try (Connection conn = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql))
         {
             //inserindo as informações dentro dos ? na ‘string’ ‘script’
 
@@ -49,16 +38,8 @@ public class PassagemRepository {
         String sql = "SELECT * FROM Passagem";
 
         try (Connection conn = ConnectionFactory.getConnection();
-    
             PreparedStatement stmt = conn.prepareStatement(sql);
-
-            //mesma coisa de cima só que aqui eu já executo a query e
-            //já pego as informações para que eu possa preencher a lista
-             
-
-            ResultSet rs = stmt.executeQuery()
-        
-        )
+            ResultSet rs = stmt.executeQuery())
         {
             while (rs.next()){
 
@@ -90,8 +71,6 @@ public class PassagemRepository {
         	
             stmt.setString(1, id);
 
-            //do mesmo jeito que eu "tento" a conexão eu tento ver se retorna
-
             try(ResultSet rs = stmt.executeQuery()){
                 if(rs.next()){
                     VooRepository vooRepository = new VooRepository();
@@ -110,8 +89,6 @@ public class PassagemRepository {
                 }
             }
     }
-
-    //se não retorno NULL
 
     return null;
 
