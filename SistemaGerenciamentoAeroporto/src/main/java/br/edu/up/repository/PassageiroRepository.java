@@ -31,7 +31,7 @@ public class PassageiroRepository {
             stmt.setString(1, p.getId());//primeiro ?
             stmt.setString(2, p.getNome());//segundo ?
             stmt.setString(3, p.getCpf());//terceiro ?
-            stmt.setString(4, p.getEdereco().getId());//terceiro ?
+            stmt.setString(4, p.getEndereco().getId());//terceiro ?
 
             //mandando as informações
             stmt.executeUpdate();

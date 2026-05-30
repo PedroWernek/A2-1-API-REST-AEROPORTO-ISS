@@ -15,6 +15,12 @@ public class Passageiro {
         this.endereco = endereco;
     }
 
+    public Passageiro(String id, String nome, String cpf) {
+        this.id = id;
+        this.nome = nome;
+        this.cpf = cpf;
+    }
+
     public String getId() {
         return id;
     }

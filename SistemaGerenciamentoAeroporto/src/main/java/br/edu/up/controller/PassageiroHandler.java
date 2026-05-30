@@ -22,6 +22,7 @@ public class PassageiroHandler implements HttpHandler {
         String path = exchange.getRequestURI().getPath();
         String[] parts = path.split("/");
         String id = (parts.length > 2) ? parts[2] : null;
+        String cep = parts.
 
         try {
             switch (exchange.getRequestMethod()){
@@ -30,7 +31,7 @@ public class PassageiroHandler implements HttpHandler {
                     else buscar(exchange, id);
                     break;
                 case "POST":
-                    criar(exchange);
+                    if(cep != null) criar(exchange, cep);
                     break;
                 case "PUT":
                     if(id != null) atualizar(exchange,id);
@@ -45,7 +46,6 @@ public class PassageiroHandler implements HttpHandler {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
             enviarErro(exchange, e.getMessage());
         }
 
@@ -59,25 +59,18 @@ public class PassageiroHandler implements HttpHandler {
 
         String json = mapper.writeValueAsString(produtos);//escrevendo a lista de passageiros como um json
 
-        enviar(exchange, json); //<- *
+        enviar(exchange, json);
     }
 
     /** Criando um passageiro no banco
-     *
-     *
      */
-    private void criar(HttpExchange exchange) throws Exception {
+    private void criar(HttpExchange exchange, String cep) throws Exception {
         Passageiro p = mapper.readValue(exchange.getRequestBody(), Passageiro.class);
-        //pegando o corpo da request que está em json
-        //e transformando na classe Passageiro
-        //para que assim seja possível a função no repository
-        //ler os valores de passageiro e mandar para o banco
 
-        Passageiro criado = service.criarPassageiro(p);//salvando no banco
-        String json = mapper.writeValueAsString(criado);//< por isso a função do repository retorna um Passageiro
-        //para que ele consiga ser lida pelo JACKSON e transformar o valor criado em json para que assim seja mandado ao usuário
+        Passageiro criado = service.criarPassageiro(p);
+        String json = mapper.writeValueAsString(criado);
 
-        enviar(exchange, json);//<- *
+        enviar(exchange, json);
     }
 
 
@@ -106,7 +99,7 @@ public class PassageiroHandler implements HttpHandler {
         os.close();
     }
 
-    // aquela função que a gente manda para o utilizador se deu certo ou não está marcada com //<- *
+    // aquela função que a gente manda para o utilizador se deu certo ou não está marcada com
     private void enviar(HttpExchange exchange, String resposta) throws IOException {
         exchange.getResponseHeaders().add("Content-Type", "application/json");
         exchange.sendResponseHeaders(200, resposta.getBytes().length);

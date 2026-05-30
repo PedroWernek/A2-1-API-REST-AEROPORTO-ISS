@@ -4,11 +4,12 @@ import java.util.List;
 import java.util.UUID;
 
 import br.edu.up.model.Passageiro;
+import br.edu.up.repository.EnderecoRepository;
 import br.edu.up.repository.PassageiroRepository;
 
 public class PassageiroService {
     private final PassageiroRepository repo = new PassageiroRepository();
-    private final EnderecoRepository endRepo = new EnderecoRepository();
+    private final EnderecoService endRepo = new EnderecoService();
 
     public Passageiro criarPassageiro(Passageiro p) throws Exception {
 
@@ -21,6 +22,8 @@ public class PassageiroService {
         if(buscarPassageiroPorCPF(p.getCpf()) != null){
             throw new Exception("CPF já cadastrado");
         }
+
+
         if(p.getEndereco() == null) {
             throw new Exception("Endereco é obrigatório");
         }
@@ -44,16 +47,21 @@ public class PassageiroService {
         return p;
     }
 
-    public Passageiro buscarPassageiroPorCPF(String cpf) throws Exception {
-        Passageiro p = repo.buscarPorCPF(cpf);
-        return p;
-    }
+    public Passageiro buscarPassageiroPorCPF(String cpf) throws Exception { return repo.buscarPorCPF(cpf); }
 
     public Passageiro atualizarPassageiro(String id, Passageiro p) throws Exception {
         Passageiro existente = buscarPassageiroPorId(id);
 
         if(p.getNome() == null || p.getNome().isEmpty()){
             throw new Exception("Nome é obrigatório");
+        }
+        if(p.getCpf() == null || p.getCpf().isEmpty()){
+            throw new Exception("CPF é obrigatório");
+        }
+        if(p.getEndereco() != null){
+            try {
+                endRepo.atualizar();
+            }
         }
         existente.setNome(p.getNome());
         existente.setCpf(p.getCpf());
@@ -65,7 +73,8 @@ public class PassageiroService {
     public Passageiro deletarPassageiro(String id) throws Exception {
         Passageiro p = buscarPassageiroPorId(id);
 
-        repo.deletar(id);
+        endRepo.deletar(p.getEndereco().getId());
+        repo.deletar(p.getId());
         return p;
     }
 }
