@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
+import br.edu.up.messaging.RabbitMQProducer;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -80,6 +81,8 @@ public class AeronaveHandler implements HttpHandler {
         //para que ele consiga ser lida pelo JACKSON e transformar o valor criado em json para que assim seja mandado ao usuário
 
         enviar(exchange, json);//<- *
+        String msg = "Aeronave criada: " + criado.getId();
+        RabbitMQProducer.enviarMensagem(msg);
     }
 
 

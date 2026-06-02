@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
+import br.edu.up.messaging.RabbitMQProducer;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -62,6 +63,8 @@ public class PassageiroHandler implements HttpHandler {
         String json = mapper.writeValueAsString(criado);
 
         enviar(exchange, json);
+        String msg = "Passageiro cadastrado: " + criado.getId();
+        RabbitMQProducer.enviarMensagem(msg);
     }
 
     private void buscar(HttpExchange exchange, String id) throws Exception {

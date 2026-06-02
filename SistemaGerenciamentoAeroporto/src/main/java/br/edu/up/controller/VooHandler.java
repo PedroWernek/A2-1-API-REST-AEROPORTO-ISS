@@ -1,5 +1,6 @@
 package br.edu.up.controller;
 
+import br.edu.up.messaging.RabbitMQProducer;
 import br.edu.up.model.Voo;
 import br.edu.up.service.VooService;
 import com.sun.net.httpserver.HttpExchange;
@@ -76,6 +77,8 @@ public class VooHandler implements HttpHandler {
 	        //para que ele consiga ser lida pelo JACKSON e transformar o valor criado em json para que assim seja mandado ao usuário
 
 	        enviar(exchange, json);//<- *
+            String msg = "Voo criado: " + criado.getId();
+            RabbitMQProducer.enviarMensagem(msg);
 	    }
 
 
