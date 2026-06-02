@@ -32,7 +32,7 @@ public class VooRepository {
         	stmt.setString(1, v.getId());
             stmt.setString(2, v.getOrigem());
             stmt.setString(3, v.getDestino());
-            stmt.setString(4, v.getDataHoraVoo());
+            stmt.setTimestamp(4, java.sql.Timestamp.valueOf(v.getDataHoraVoo().replace("T", " ")));
             stmt.setInt(5, v.getAssentosDisponiveis());
             stmt.setString(6, v.getAeronave().getId());
 
@@ -133,7 +133,7 @@ public class VooRepository {
             
             stmt.setString(1, v.getOrigem());//primeiro ?
             stmt.setString(2, v.getDestino());//segundo ?
-            stmt.setString(3, v.getDataHoraVoo());//terceiro ?
+            stmt.setTimestamp(3, java.sql.Timestamp.valueOf(v.getDataHoraVoo().replace("T", " ")));
             stmt.setInt(4, v.getAssentosDisponiveis());//quarto ?
             stmt.setString(5, v.getAeronave().getId());//quinto ?
             stmt.setString(6, v.getId());//sexto ?
