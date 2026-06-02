@@ -4,6 +4,8 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import br.edu.up.repository.connection.RabbitMQConnection;
 
+import java.nio.charset.StandardCharsets;
+
 public class RabbitMQProducer {
     private static final String QUEUE_NAME = "emissao_bilhetes";
 
@@ -15,7 +17,7 @@ public class RabbitMQProducer {
             channel.queueDeclare(QUEUE_NAME, false, false, false, null);
 
             // Publica a mensagem na fila
-            channel.basicPublish("", QUEUE_NAME, null, mensagem.getBytes("UTF-8"));
+            channel.basicPublish("", QUEUE_NAME, null, mensagem.getBytes(StandardCharsets.UTF_8));
             System.out.println(" [x] Mensagem enviada para o RabbitMQ: '" + mensagem + "'");
 
         } catch (Exception e) {
