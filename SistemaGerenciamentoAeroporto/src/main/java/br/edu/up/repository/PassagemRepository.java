@@ -94,22 +94,22 @@ public class PassagemRepository {
 
 }
 
-public void atualizar(Passagem pa) throws SQLException {
-    String sql = "UPDATE Passagem SET assento = ?, valor = ?, voo_id = ?, passageiro_id = ? WHERE id = ?";
+    public void atualizar(Passagem pa) throws SQLException {
+        String sql = "UPDATE Passagem SET assento = ?, valor = ?, voo_id = ?, passageiro_id = ? WHERE id = ?";
 
-    try(Connection conn = ConnectionFactory.getConnection();
-        PreparedStatement stmt = conn.prepareStatement(sql))
+        try(Connection conn = ConnectionFactory.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql))
         {
-            stmt.setString(1, pa.getId());
-            stmt.setString(2, pa.getAssento());
-            stmt.setDouble(3, pa.getValor());
-            stmt.setString(4, pa.getVoo().getId());
-            stmt.setString(5, pa.getPassageiro().getId());
+            stmt.setString(1, pa.getAssento());
+            stmt.setDouble(2, pa.getValor());
+            stmt.setString(3, pa.getVoo().getId());
+            stmt.setString(4, pa.getPassageiro().getId());
+            stmt.setString(5, pa.getId()); // O id fica por último por causa do WHERE
 
             stmt.executeUpdate();
         }
-            
-} 
+
+    }
 
 public void deletar(String id) throws SQLException {
     String sql = "DELETE FROM Passagem WHERE id = ?";

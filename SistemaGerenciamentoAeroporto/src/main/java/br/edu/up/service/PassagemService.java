@@ -59,6 +59,7 @@ public class PassagemService {
 
     public Passagem buscarPassagemPorId(String id) throws Exception {
         Passagem p = repo.buscarPorId(id);
+
         if (p == null) {
             throw new Exception("Passagem não encontrada");
         }

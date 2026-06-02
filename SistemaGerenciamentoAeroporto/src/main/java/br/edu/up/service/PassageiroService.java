@@ -65,6 +65,8 @@ public class PassageiroService {
             throw new Exception("CPF é obrigatório");
         }
 
+        //se não existir endereço ele vai criar um novo com base no cep fornecido se não ele só atualiza
+        //por que não reaproveitar?? pois endereços tem números diferentes (ainda não implementado)
         if (p.getEndereco() != null && p.getEndereco().getCep() != null) {
             Endereco enderecoCompleto = viaCepClient.buscarEndereco(p.getEndereco().getCep());
 
