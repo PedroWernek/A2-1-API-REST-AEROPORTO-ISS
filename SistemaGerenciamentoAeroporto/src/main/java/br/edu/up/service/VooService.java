@@ -35,13 +35,9 @@ public class VooService {
             throw new Exception("Aeronave é obrigatório!");
         }
 
-        Aeronave aeronave = aeroRepo.buscarPorId(p.getAeronave().getId());
 
-        if (aeronave == null) {
-            throw new Exception("Aeronave não encontrada!");
-        }
 
-        p.setAeronave(aeronave);
+        p.setAeronave(getAeronave(p.getAeronave().getId()));
         p.setId(UUID.randomUUID().toString());
 
         repo.salvar(p);
@@ -90,8 +86,8 @@ public class VooService {
         existente.setDataHoraVoo(p.getDataHoraVoo());
         existente.setAssentosDisponiveis(p.getAssentosDisponiveis());
         existente.setAeronave(p.getAeronave());
-        
 
+        existente.setAeronave(getAeronave(p.getAeronave().getId()));
         
 
         repo.atualizar(existente);
@@ -103,6 +99,15 @@ public class VooService {
 
         repo.deletar(id);
         return p;
+    }
+
+    private Aeronave getAeronave(String id) throws Exception{
+        Aeronave aeronave = aeroRepo.buscarPorId(id);
+
+        if (aeronave == null) {
+            throw new Exception("Aeronave não encontrada!");
+        }
+        return aeronave;
     }
 
 }

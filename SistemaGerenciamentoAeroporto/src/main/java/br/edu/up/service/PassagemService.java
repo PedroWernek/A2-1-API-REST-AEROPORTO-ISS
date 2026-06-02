@@ -34,22 +34,15 @@ public class PassagemService {
             throw new Exception("Passageiro é obrigatório");
         }
 
-        Voo voo = vooRepo.buscarPorId(p.getVoo().getId());
-        if (voo == null) {
-            throw new Exception("Voo não encontrado");
-        }
+        Passageiro passageiro = getPassageiro(p.getPassageiro().getId());
+        Voo voo = getVoo(p.getVoo().getId());
+
+        p.setVoo(voo);
+        p.setPassageiro(passageiro);
 
         if (voo.getAssentosDisponiveis() <= 0) {
             throw new Exception("Não há assentos disponíveis para este voo");
         }
-
-        Passageiro passageiro = passageiroRepo.buscarPorId(p.getPassageiro().getId());
-        if (passageiro == null) {
-            throw new Exception("Passageiro não encontrado");
-        }
-
-        p.setVoo(voo);
-        p.setPassageiro(passageiro);
 
         voo.setAssentosDisponiveis(voo.getAssentosDisponiveis() - 1);
         vooRepo.atualizar(voo);
@@ -136,5 +129,22 @@ public class PassagemService {
 
         repo.deletar(id);
         return p;
+    }
+
+    private Passageiro getPassageiro(String id) throws Exception{
+        Passageiro passageiro = passageiroRepo.buscarPorId(id);
+        if (passageiro == null) {
+            throw new Exception("Passageiro não encontrado");
+        }
+        return passageiro;
+    }
+
+    private Voo getVoo(String id) throws Exception {
+        Voo voo = vooRepo.buscarPorId(id);
+        if (voo == null) {
+            throw new Exception("Voo não encontrado");
+        }
+
+        return voo;
     }
 }

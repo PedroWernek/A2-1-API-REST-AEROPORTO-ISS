@@ -17,7 +17,7 @@ public class PassageiroService {
     public Passageiro criarPassageiro(Passageiro p) throws Exception {
 
         if(p.getEndereco() != null && p.getEndereco().getCep() != null) {
-            Endereco enderecoCompleto = viaCepClient.buscarEndereco(p.getEndereco().getCep());
+            Endereco enderecoCompleto = getEndereco(p.getEndereco().getCep());
             enderecoCompleto.setId(UUID.randomUUID().toString());
 
             endService.salvar(enderecoCompleto);
@@ -100,5 +100,9 @@ public class PassageiroService {
         }
 
         return p;
+    }
+
+    private Endereco getEndereco(String cep) throws Exception{
+        return viaCepClient.buscarEndereco(cep);
     }
 }
