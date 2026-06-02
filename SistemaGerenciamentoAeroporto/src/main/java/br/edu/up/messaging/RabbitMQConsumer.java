@@ -16,7 +16,7 @@ public class RabbitMQConsumer implements Runnable {
             Connection connection = RabbitMQConnection.getConnection();
             Channel channel = connection.createChannel();
 
-            channel.queueDeclare(QUEUE_NAME, true, false, false, null);
+            channel.queueDeclare(QUEUE_NAME, false, false, false, null);
             System.out.println(" [*] Consumidor RabbitMQ a aguardar mensagens na fila '" + QUEUE_NAME + "'...");
 
             DeliverCallback deliverCallback = (consumerTag, delivery) -> {

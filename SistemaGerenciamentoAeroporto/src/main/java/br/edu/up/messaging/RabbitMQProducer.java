@@ -14,7 +14,7 @@ public class RabbitMQProducer {
              Channel channel = connection.createChannel()) {
 
             // Cria a fila se ela não existir
-            channel.queueDeclare(QUEUE_NAME, true, false, false, null);
+            channel.queueDeclare(QUEUE_NAME, false, false, false, null);
 
             // Publica a mensagem na fila
             channel.basicPublish("", QUEUE_NAME, null, mensagem.getBytes(StandardCharsets.UTF_8));
