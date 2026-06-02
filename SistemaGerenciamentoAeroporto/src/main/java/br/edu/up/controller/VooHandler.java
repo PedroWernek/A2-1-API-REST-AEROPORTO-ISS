@@ -44,10 +44,9 @@ public class VooHandler implements HttpHandler {
 	            }
 
 	        } catch (Exception e) {
-									e.printStackTrace();
-									enviarErro(exchange, e.getMessage());
-							}
-			
+                System.out.println(e.getMessage());
+                enviarErro(exchange, e.getMessage());
+            }
 		}
 		
 		/**Listando TODOS os voos da Tabela voo

@@ -47,11 +47,11 @@ public class PassagemHandler implements HttpHandler {
 	                exchange.sendResponseHeaders(405,-1); //Method Not Allowed
 	        }
 
-	    } catch (Exception e) {
-									e.printStackTrace();
-									enviarErro(exchange, e.getMessage());
-							}
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            enviarErro(exchange, e.getMessage());
         }
+    }
 
 		/**Listando TODAS as passagens da Tabela passagens
      	* não esqueça que a operação que faz a comunicação com o banco está no repository
@@ -83,6 +83,8 @@ public class PassagemHandler implements HttpHandler {
 	        String json = mapper.writeValueAsString(criada);
 
 	        enviar(exchange, json);
+            String msg = "Passagem confirmada para o passageiro ID: " + criada.getId() + ". Voo ID: " + criada.getVoo().getId();
+            br.edu.up.messaging.RabbitMQProducer.enviarMensagem(msg);
 	    }
 
         private void buscar(HttpExchange exchange, String id) throws Exception {

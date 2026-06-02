@@ -44,6 +44,7 @@ public class PassageiroHandler implements HttpHandler {
             }
 
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             enviarErro(exchange, e.getMessage());
         }
     }

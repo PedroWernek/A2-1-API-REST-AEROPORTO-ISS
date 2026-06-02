@@ -3,6 +3,7 @@ package br.edu.up;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
+import br.edu.up.messaging.RabbitMQConsumer;
 import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
@@ -12,44 +13,6 @@ import br.edu.up.controller.PassageiroHandler;
 import br.edu.up.controller.PassagemHandler;
 import br.edu.up.controller.VooHandler;
 
-//Importem em seu mySQL o
-//'aeroporto_passageiro.sql'
-//que é ondem está nossa base
-//no nosso repositório
-
-//Para criar tabelas:
-/*
-* CREATE TABLE passageiro( //essa é a primeira tabela que criei por enquanto
-    id VARCHAR(50) PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    cpf VARCHAR(14) NOT NULL
-  );
-
- CREATE TABLE aeronave( // segunda tabela
-    id VARCHAR(50) PRIMARY KEY,
-    tipo VARCHAR(100) NOT NULL,
-    capacidadeAssentos INT NOT NULL,
-    modelo VARCHAR(50) NOT NULL
-
-  );
-  
-
-CREATE TABLE voo (
-    id VARCHAR(50) PRIMARY KEY,
-    origem VARCHAR(100) NOT NULL,
-    destino VARCHAR(100) NOT NULL,
-    dataHoraVoo VARCHAR(50) NOT NULL,
-    assentosDisponiveis INT,
-    FOREIGN KEY (id) REFERENCES aeronave(id)
-
-);
-
-
-* */
-
-
-
-//Recomendo vocês usarem Postman para fazer as requisições
 public class Main {
     public static void main(String[] args) throws Exception{
         String portStr = System.getenv("PORT");
@@ -82,7 +45,6 @@ public class Main {
             }
         };
 
-        // Adicionamos o filtro em todas as rotas do seu sistema
         server.createContext("/passageiro", new PassageiroHandler()).getFilters().add(corsFilter);
         server.createContext("/aeronave", new AeronaveHandler()).getFilters().add(corsFilter);
         server.createContext("/voo", new VooHandler()).getFilters().add(corsFilter);
@@ -91,5 +53,11 @@ public class Main {
         server.setExecutor(null);
         server.start();
         System.out.println("http://localhost:" + port);
+
+        // Iniciar o Consumer em segundo plano depois de iniciar o server: é como se eu tivesse ligado uma segunda main
+
+        //link para ver as filas: https://jaragua.lmq.cloudamqp.com/queues#page=1&page_size=100
+        Thread consumerThread = new Thread(new RabbitMQConsumer());
+        consumerThread.start();
     }
 }

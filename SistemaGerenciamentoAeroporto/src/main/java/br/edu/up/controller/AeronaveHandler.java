@@ -45,7 +45,7 @@ public class AeronaveHandler implements HttpHandler {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
             enviarErro(exchange, e.getMessage());
         }
 
