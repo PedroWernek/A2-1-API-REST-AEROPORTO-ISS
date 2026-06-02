@@ -1,6 +1,8 @@
 package br.edu.up.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Voo {
     private String id;
     private String origem;
