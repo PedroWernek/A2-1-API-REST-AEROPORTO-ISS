@@ -1,4 +1,4 @@
-import { useState, FormEvent, useEffect } from "react";
+import { useState, useEffect,SubmitEvent } from "react";
 import { aeronaveService, Aeronave } from "../../../services/aeronaveService";
 
 interface AeronaveFormProps {
@@ -25,22 +25,22 @@ export function AeronaveForm({ aeronaveEditando, onSuccess, onCancel }: Aeronave
     }
   }, [aeronaveEditando]);
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setLoading(true)
     try {
       if (aeronaveEditando?.id) {
-        await aeronaveService.atualizar(aeronaveEditando.id, formData);
+        await aeronaveService.atualizar(aeronaveEditando.id, formData)
       } else {
-        await aeronaveService.criar(formData);
+        await aeronaveService.criar(formData)
       }
-      onSuccess();
+      onSuccess()
     } catch (error) {
-      console.error(error);
+      console.error(error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
