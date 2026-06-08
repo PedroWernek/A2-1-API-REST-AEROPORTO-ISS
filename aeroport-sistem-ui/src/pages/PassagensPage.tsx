@@ -28,17 +28,20 @@ export function PassagensPage() {
     carregarPassagens()
   }, [])
 
-  const carregarPassagens = async () => {
-    setLoading(true)
-    try {
-      const data = await passagemService.listar()
-      setPassagens(data)
-    } catch (error) {
-      console.error(error)
-    } finally {
-      setLoading(false)
-    }
+const carregarPassagens = async () => {
+  setLoading(true)
+  try {
+    const data = await passagemService.listar()
+    // O truque do || [] garante que se vier nulo/undefined, vira um array vazio
+    setPassagens(data || [])
+  } catch (error) {
+    console.error(error)
+    // Em caso de erro na API (ex: servidor desligado), não quebra a tela
+    setPassagens([])
+  } finally {
+    setLoading(false)
   }
+}
 
   const handleDelete = async (id: string) => {
     if (

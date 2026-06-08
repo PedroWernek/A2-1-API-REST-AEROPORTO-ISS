@@ -10,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription
 } from "../../components/ui/dialog"
 
 interface AeronaveFormModalProps {
@@ -57,11 +58,16 @@ export function AeronaveFormModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>
-            {aeronaveEditando ? "Editar Aeronave" : "Nova Aeronave"}
+            {aeronaveEditando ? "Editar aeronave" : "Novo aeronave"}
           </DialogTitle>
+
+          {/* CORREÇÃO AQUI: Adicionar a descrição obrigatória (escondida ou visível) */}
+          <DialogDescription className="hidden">
+            Preencha os dados do aeronave para registar no sistema.
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 pt-4">
           <div className="space-y-2">

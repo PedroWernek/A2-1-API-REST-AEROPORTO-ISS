@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "../../components/ui/dialog"
 import {
   Select,
@@ -100,9 +101,16 @@ export function VooFormModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>{vooEditando ? "Editar Voo" : "Novo Voo"}</DialogTitle>
+          <DialogTitle>
+            {vooEditando ? "Editar voo" : "Novo voo"}
+          </DialogTitle>
+
+          {/* CORREÇÃO AQUI: Adicionar a descrição obrigatória (escondida ou visível) */}
+          <DialogDescription className="hidden">
+            Preencha os dados do voo para registar no sistema.
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 pt-4">
           <div className="grid grid-cols-2 gap-4">

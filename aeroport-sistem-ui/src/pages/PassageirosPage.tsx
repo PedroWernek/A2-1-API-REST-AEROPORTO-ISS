@@ -22,17 +22,18 @@ export function PassageirosPage() {
     carregarPassageiros()
   }, [])
 
-  const carregarPassageiros = async () => {
-    setLoading(true)
-    try {
-      const data = await passageiroService.listar()
-      setPassageiros(data)
-    } catch (error) {
-      console.error(error)
-    } finally {
-      setLoading(false)
-    }
+const carregarPassageiros = async () => {
+  setLoading(true)
+  try {
+    const data = await passageiroService.listar()
+    setPassageiros(data || [])
+  } catch (error) {
+    console.error(error)
+    setPassageiros([])
+  } finally {
+    setLoading(false)
   }
+}
 
   const handleDelete = async (id: string) => {
     if (window.confirm("Deseja mesmo remover este passageiro do sistema?")) {

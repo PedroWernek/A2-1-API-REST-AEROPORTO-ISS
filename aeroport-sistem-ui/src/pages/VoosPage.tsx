@@ -22,17 +22,20 @@ export function VoosPage() {
     carregarVoos()
   }, [])
 
-  const carregarVoos = async () => {
-    setLoading(true)
-    try {
-      const data = await vooService.listar()
-      setVoos(data)
-    } catch (error) {
-      console.error(error)
-    } finally {
-      setLoading(false)
-    }
+const carregarVoos = async () => {
+  setLoading(true)
+  try {
+    const data = await vooService.listar()
+    // O truque do || [] garante que se vier nulo/undefined, vira um array vazio
+    setVoos(data || [])
+  } catch (error) {
+    console.error(error)
+    // Em caso de erro na API (ex: servidor desligado), não quebra a tela
+    setVoos([])
+  } finally {
+    setLoading(false)
   }
+}
 
   const handleDelete = async (id: string) => {
     if (window.confirm("Deseja mesmo cancelar e remover este voo?")) {

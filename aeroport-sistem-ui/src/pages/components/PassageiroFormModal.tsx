@@ -10,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "../../components/ui/dialog"
 
 interface PassageiroFormModalProps {
@@ -82,6 +83,11 @@ export function PassageiroFormModal({
           <DialogTitle>
             {passageiroEditando ? "Editar Passageiro" : "Novo Passageiro"}
           </DialogTitle>
+
+          {/* CORREÇÃO AQUI: Adicionar a descrição obrigatória (escondida ou visível) */}
+          <DialogDescription className="hidden">
+            Preencha os dados do passageiro para registar no sistema.
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6 pt-4">

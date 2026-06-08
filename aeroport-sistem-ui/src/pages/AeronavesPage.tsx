@@ -26,17 +26,20 @@ export function AeronavesPage() {
     carregarAeronaves()
   }, [])
 
-  const carregarAeronaves = async () => {
-    setLoading(true)
-    try {
-      const data = await aeronaveService.listar()
-      setAeronaves(data)
-    } catch (error) {
-      console.error("Erro ao carregar aeronaves:", error)
-    } finally {
-      setLoading(false)
-    }
+const carregarAeronaves = async () => {
+  setLoading(true)
+  try {
+    const data = await aeronaveService.listar()
+    // O truque do || [] garante que se vier nulo/undefined, vira um array vazio
+    setAeronaves(data || [])
+  } catch (error) {
+    console.error(error)
+    // Em caso de erro na API (ex: servidor desligado), não quebra a tela
+    setAeronaves([])
+  } finally {
+    setLoading(false)
   }
+}
 
 const handleDelete = async (id?: string) => {
   if (!id) return // <-- Se não tiver ID, cancela a função na hora
