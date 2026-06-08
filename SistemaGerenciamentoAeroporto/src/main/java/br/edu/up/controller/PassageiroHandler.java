@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
-import br.edu.up.messaging.RabbitMQProducer;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
+import br.edu.up.messaging.RabbitMQProducer;
 import br.edu.up.model.Passageiro;
 import br.edu.up.service.PassageiroService;
 import tools.jackson.databind.ObjectMapper;
@@ -25,23 +25,20 @@ public class PassageiroHandler implements HttpHandler {
 
         try {
             switch (exchange.getRequestMethod()){
-                case "GET":
+                case "GET" -> {
                     if(id == null) listar(exchange);
                     else buscar(exchange, id);
-                    break;
-                case "POST":
-                    criar(exchange);
-                    break;
-                case "PUT":
+                }
+                case "POST" -> criar(exchange);
+                case "PUT" -> {
                     if(id != null) atualizar(exchange, id);
                     else exchange.sendResponseHeaders(400, -1);
-                    break;
-                case "DELETE":
+                }
+                case "DELETE" -> {
                     if(id != null) deletar(exchange, id);
                     else exchange.sendResponseHeaders(400, -1);
-                    break;
-                default:
-                    exchange.sendResponseHeaders(405, -1);
+                }
+                default -> exchange.sendResponseHeaders(405, -1);
             }
 
         } catch (Exception e) {
@@ -87,16 +84,17 @@ public class PassageiroHandler implements HttpHandler {
         byte[] resp = erro.getBytes();
         exchange.getResponseHeaders().add("Content-Type", "application/json");
         exchange.sendResponseHeaders(400, resp.length);
-        OutputStream os = exchange.getResponseBody();
-        os.write(resp);
-        os.close();
+        try (OutputStream os = exchange.getResponseBody()) {
+            os.write(resp);
+            os.close();
+        }
     }
 
     private void enviar(HttpExchange exchange, String resposta) throws IOException {
         exchange.getResponseHeaders().add("Content-Type", "application/json");
         exchange.sendResponseHeaders(200, resposta.getBytes().length);
-        OutputStream os = exchange.getResponseBody();
-        os.write(resposta.getBytes());
-        os.close();
+        try (OutputStream os = exchange.getResponseBody()) {
+            os.write(resposta.getBytes());
+        }
     }
 }

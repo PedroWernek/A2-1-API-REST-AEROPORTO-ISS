@@ -1,6 +1,5 @@
 import { api } from "../lib/api"
 
-// 1. As interfaces exatas que batem com o seu Java
 export interface Endereco {
   id?: string
   cep: string
@@ -17,27 +16,20 @@ export interface Passageiro {
   endereco: Endereco
 }
 
-// 2. As chamadas da API
 export const passageiroService = {
   listar: async (): Promise<Passageiro[]> => {
-    const response = await api.get("/passageiros")
-    return response.data
+    return await api.get("/passageiro")
   },
-
   criar: async (passageiro: Passageiro): Promise<Passageiro> => {
-    const response = await api.post("/passageiros", passageiro)
-    return response.data
+    return await api.post("/passageiro", passageiro)
   },
-
   atualizar: async (
     id: string,
     passageiro: Passageiro
   ): Promise<Passageiro> => {
-    const response = await api.put(`/passageiros/${id}`, passageiro)
-    return response.data
+    return await api.put(`/passageiro/${id}`, passageiro)
   },
-
   remover: async (id: string): Promise<void> => {
-    await api.delete(`/passageiros/${id}`)
+    await api.delete(`/passageiro/${id}`)
   },
 }

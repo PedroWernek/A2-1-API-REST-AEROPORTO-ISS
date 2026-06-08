@@ -12,21 +12,15 @@ export interface Voo {
 
 export const vooService = {
   listar: async (): Promise<Voo[]> => {
-    const response = await api.get("/voos")
-    return response.data
+    return await api.get("/voo")
   },
-
   criar: async (voo: Voo): Promise<Voo> => {
-    const response = await api.post("/voos", voo)
-    return response.data
+    return await api.post("/voo", voo)
   },
-
   atualizar: async (id: string, voo: Voo): Promise<Voo> => {
-    const response = await api.put(`/voos/${id}`, voo)
-    return response.data
+    return await api.put(`/voo/${id}`, voo)
   },
-
   remover: async (id: string): Promise<void> => {
-    await api.delete(`/voos/${id}`)
+    await api.delete(`/voo/${id}`)
   },
 }

@@ -2,10 +2,8 @@ package br.edu.up.repository.connection;
 
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
-import io.github.cdimascio.dotenv.Dotenv;
 
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import io.github.cdimascio.dotenv.Dotenv;
 
 public class RabbitMQConnection {
     private static String RABBITMQ_URL;

@@ -12,21 +12,15 @@ export interface Passagem {
 
 export const passagemService = {
   listar: async (): Promise<Passagem[]> => {
-    const response = await api.get("/passagens")
-    return response.data
+    return await api.get("/passagem")
   },
-
   criar: async (passagem: Passagem): Promise<Passagem> => {
-    const response = await api.post("/passagens", passagem)
-    return response.data
+    return await api.post("/passagem", passagem)
   },
-
   atualizar: async (id: string, passagem: Passagem): Promise<Passagem> => {
-    const response = await api.put(`/passagens/${id}`, passagem)
-    return response.data
+    return await api.put(`/passagem/${id}`, passagem)
   },
-
   remover: async (id: string): Promise<void> => {
-    await api.delete(`/passagens/${id}`)
+    await api.delete(`/passagem/${id}`)
   },
 }

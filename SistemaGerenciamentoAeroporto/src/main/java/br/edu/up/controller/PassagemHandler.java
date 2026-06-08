@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
-import br.edu.up.messaging.RabbitMQProducer;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
+import br.edu.up.messaging.RabbitMQProducer;
 import br.edu.up.model.Passagem;
 import br.edu.up.service.PassagemService;
 import tools.jackson.databind.ObjectMapper;
@@ -29,23 +29,20 @@ public class PassagemHandler implements HttpHandler {
 
         try {
 	        switch (exchange.getRequestMethod()){
-	            case "GET":
-	                if(id == null) listar(exchange);
-	                else buscar(exchange, id);
-	                break;
-	            case "POST":
-	                criar(exchange);
-	                break;
-	            case "PUT":
-	                if(id != null) atualizar(exchange,id);
-	                else exchange.sendResponseHeaders(400,-1);
-	                break;
-	            case "DELETE":
-	                if(id != null) deletar(exchange, id);
-	                else exchange.sendResponseHeaders(400,-1);
-	                break;
-	            default:
-	                exchange.sendResponseHeaders(405,-1); //Method Not Allowed
+	            case "GET" -> {
+                        if(id == null) listar(exchange);
+                        else buscar(exchange, id);
+                }
+	            case "POST" -> criar(exchange);
+	            case "PUT" -> {
+                        if(id != null) atualizar(exchange,id);
+                        else exchange.sendResponseHeaders(400,-1);
+                }
+	            case "DELETE" -> {
+                        if(id != null) deletar(exchange, id);
+                        else exchange.sendResponseHeaders(400,-1);
+                }
+	            default -> exchange.sendResponseHeaders(405,-1); //Method Not Allowed
 	        }
 
         } catch (Exception e) {
@@ -107,18 +104,18 @@ public class PassagemHandler implements HttpHandler {
         private void enviarErro(HttpExchange exchange, String erro) throws IOException {
 	        byte[] resp = erro.getBytes();
 	        exchange.sendResponseHeaders(400, resp.length);
-	        OutputStream os = exchange.getResponseBody();
-	        os.write(resp);
-	        os.close();
+        try (OutputStream os = exchange.getResponseBody()) {
+            os.write(resp);
+        }
 	    }
 
 		// aquela função que a gente manda para o utilizador se deu certo ou não está marcada com //<- *
         private void enviar(HttpExchange exchange, String resposta) throws IOException {
 	        exchange.getResponseHeaders().add("Content-Type", "application/json");
 	        exchange.sendResponseHeaders(200, resposta.getBytes().length);
-	        OutputStream os = exchange.getResponseBody();
-	        os.write(resposta.getBytes());
-	        os.close();
+        try (OutputStream os = exchange.getResponseBody()) {
+            os.write(resposta.getBytes());
+        }
 	    }
 
 }

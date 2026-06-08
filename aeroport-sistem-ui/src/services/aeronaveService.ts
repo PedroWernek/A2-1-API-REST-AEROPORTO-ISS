@@ -9,21 +9,15 @@ export interface Aeronave {
 
 export const aeronaveService = {
   listar: async (): Promise<Aeronave[]> => {
-    const response = await api.get("/aeronaves")
-    return response.data
+    return await api.get("/aeronave") // Rota no singular e sem .data
   },
-
   criar: async (aeronave: Aeronave): Promise<Aeronave> => {
-    const response = await api.post("/aeronaves", aeronave)
-    return response.data
+    return await api.post("/aeronave", aeronave)
   },
-
   atualizar: async (id: string, aeronave: Aeronave): Promise<Aeronave> => {
-    const response = await api.put(`/aeronaves/${id}`, aeronave)
-    return response.data
+    return await api.put(`/aeronave/${id}`, aeronave)
   },
-
   remover: async (id: string): Promise<void> => {
-    await api.delete(`/aeronaves/${id}`)
+    await api.delete(`/aeronave/${id}`)
   },
 }
