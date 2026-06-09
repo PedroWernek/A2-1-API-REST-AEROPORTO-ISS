@@ -108,7 +108,7 @@ export function AeronavesList() {
                           <Pencil size={18} />
                         </button>
                         <button 
-                          onClick={() => handleDelete(aeronave.id)}
+                          onClick={() => aeronave.id && handleDelete(aeronave.id)}
                           className="rounded p-1 text-slate-400 hover:bg-red-50 hover:text-red-600"
                         >
                           <Trash2 size={18} />
