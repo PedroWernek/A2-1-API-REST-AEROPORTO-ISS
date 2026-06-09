@@ -42,9 +42,14 @@ public class VooHandler implements HttpHandler {
 	                default -> exchange.sendResponseHeaders(405,-1); //Method Not Allowed
 	            }
 
-	        } catch (Exception e) {
-                System.out.println(e.getMessage());
-                enviarErro(exchange, e.getMessage());
+						} catch (Exception e) {
+                // 1. Imprime o erro completo no terminal do Render para você saber o que falhou
+                e.printStackTrace(); 
+                
+                // 2. Protege contra mensagens nulas (evita o crash fatal no erro.getBytes())
+                String mensagemErro = e.getMessage() != null ? e.getMessage() : "Erro interno no servidor (NullPointerException)";
+                
+                enviarErro(exchange, mensagemErro);
             }
 		}
 		

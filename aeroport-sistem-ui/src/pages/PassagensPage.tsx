@@ -6,6 +6,7 @@ import {
   Loader2,
   Ticket as TicketIcon,
 } from "lucide-react"
+import { toast } from "sonner" // <-- Importação do feedback visual
 import { passagemService } from "../services/passagemService"
 import { Button } from "../components/ui/button"
 import {
@@ -18,6 +19,18 @@ import {
 } from "../components/ui/table"
 import { PassagemFormModal } from "./components/PassagemFormModal"
 
+// Função para formatar a data do voo de forma legível
+const formatarDataVisivel = (dataJava: string) => {
+  if (!dataJava) return ""
+  const limpa = dataJava.replace("T", " ")
+  const partes = limpa.split(" ")
+  if (partes.length !== 2) return limpa
+
+  const [ano, mes, dia] = partes[0].split("-")
+  const hora = partes[1].substring(0, 5)
+  return `${dia}/${mes}/${ano} às ${hora}`
+}
+
 export function PassagensPage() {
   const [passagens, setPassagens] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -28,20 +41,19 @@ export function PassagensPage() {
     carregarPassagens()
   }, [])
 
-const carregarPassagens = async () => {
-  setLoading(true)
-  try {
-    const data = await passagemService.listar()
-    // O truque do || [] garante que se vier nulo/undefined, vira um array vazio
-    setPassagens(data || [])
-  } catch (error) {
-    console.error(error)
-    // Em caso de erro na API (ex: servidor desligado), não quebra a tela
-    setPassagens([])
-  } finally {
-    setLoading(false)
+  const carregarPassagens = async () => {
+    setLoading(true)
+    try {
+      const data = await passagemService.listar()
+      setPassagens(data || [])
+    } catch (error) {
+      console.error(error)
+      toast.error("Erro ao carregar a lista de passagens do servidor.") // <-- Feedback visual de erro na listagem
+      setPassagens([])
+    } finally {
+      setLoading(false)
+    }
   }
-}
 
   const handleDelete = async (id: string) => {
     if (
@@ -49,8 +61,14 @@ const carregarPassagens = async () => {
         "Atenção: Tem a certeza que deseja cancelar e eliminar esta passagem?"
       )
     ) {
-      await passagemService.remover(id)
-      carregarPassagens()
+      try {
+        await passagemService.remover(id)
+        toast.success("Passagem eliminada com sucesso!") // <-- Feedback visual de sucesso
+        carregarPassagens()
+      } catch (error) {
+        console.error(error)
+        toast.error("Erro ao eliminar a passagem. Tente novamente.") // <-- Feedback visual de erro
+      }
     }
   }
 
@@ -70,14 +88,14 @@ const carregarPassagens = async () => {
             setPassagemEditando(null)
             setIsModalOpen(true)
           }}
-          className="bg-slate-900 text-white"
+          className="bg-slate-900 text-white hover:bg-slate-800"
         >
           <Plus size={16} className="mr-2" /> Emitir Passagem
         </Button>
       </div>
 
       {loading ? (
-        <div className="flex h-[400px] items-center justify-center rounded-md border border-dashed">
+        <div className="flex h-[400px] items-center justify-center rounded-md border border-dashed border-slate-200">
           <Loader2 className="animate-spin text-slate-400" />
         </div>
       ) : (
@@ -86,7 +104,7 @@ const carregarPassagens = async () => {
             <TableHeader className="bg-slate-50/80">
               <TableRow>
                 <TableHead>Passageiro</TableHead>
-                <TableHead>Voo</TableHead>
+                <TableHead>Voo (Rota e Data)</TableHead>
                 <TableHead>Assento</TableHead>
                 <TableHead>Valor</TableHead>
                 <TableHead className="text-right">Ações</TableHead>
@@ -107,28 +125,38 @@ const carregarPassagens = async () => {
                 </TableRow>
               ) : (
                 passagens.map((p) => (
-                  <TableRow key={p.id}>
+                  <TableRow
+                    key={p.id}
+                    className="transition-colors hover:bg-slate-50"
+                  >
                     <TableCell className="font-medium text-slate-900">
                       {p.passageiro?.nome || "N/A"}
                     </TableCell>
                     <TableCell className="text-slate-600">
-                      {p.voo?.numero}{" "}
-                      <span className="text-xs text-slate-400">
-                        ({p.voo?.origem}-{p.voo?.destino})
-                      </span>
+                      <div className="flex flex-col">
+                        <span className="font-medium text-slate-800">
+                          {p.voo?.origem} → {p.voo?.destino}
+                        </span>
+                        <span className="text-xs text-slate-500">
+                          {p.voo?.dataHoraVoo
+                            ? formatarDataVisivel(p.voo.dataHoraVoo)
+                            : "Sem data"}
+                        </span>
+                      </div>
                     </TableCell>
                     <TableCell>
                       <span className="inline-flex items-center rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-600 ring-1 ring-slate-500/10 ring-inset">
                         {p.assento}
                       </span>
                     </TableCell>
-                    <TableCell className="text-slate-600">
+                    <TableCell className="font-medium text-slate-600">
                       R$ {Number(p.valor).toFixed(2)}
                     </TableCell>
                     <TableCell className="text-right">
                       <Button
                         variant="ghost"
                         size="icon"
+                        className="text-slate-500 hover:text-slate-900"
                         onClick={() => {
                           setPassagemEditando(p)
                           setIsModalOpen(true)
@@ -140,7 +168,7 @@ const carregarPassagens = async () => {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleDelete(p.id)}
-                        className="text-red-500"
+                        className="text-slate-400 hover:bg-red-50 hover:text-red-600"
                       >
                         <Trash2 size={16} />
                       </Button>
