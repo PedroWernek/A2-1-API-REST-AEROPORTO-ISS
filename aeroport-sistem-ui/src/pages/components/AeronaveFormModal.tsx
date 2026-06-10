@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-  DialogDescription
+  DialogDescription,
 } from "../../components/ui/dialog"
 
 interface AeronaveFormModalProps {
@@ -32,6 +32,9 @@ export function AeronaveFormModal({
     modelo: "",
   })
 
+  // NOVO ESTADO: Controla o status de carregamento
+  const [isSaving, setIsSaving] = useState(false)
+
   useEffect(() => {
     if (aeronaveEditando && isOpen) {
       setFormData(aeronaveEditando)
@@ -42,6 +45,8 @@ export function AeronaveFormModal({
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setIsSaving(true) // Inicia o estado de salvamento
+
     try {
       if (aeronaveEditando?.id) {
         await aeronaveService.atualizar(aeronaveEditando.id, formData)
@@ -53,6 +58,8 @@ export function AeronaveFormModal({
       onSuccess()
     } catch (error) {
       toast.error("Erro ao salvar aeronave.")
+    } finally {
+      setIsSaving(false) // Finaliza o estado de salvamento (com sucesso ou erro)
     }
   }
 
@@ -61,12 +68,11 @@ export function AeronaveFormModal({
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>
-            {aeronaveEditando ? "Editar aeronave" : "Novo aeronave"}
+            {aeronaveEditando ? "Editar aeronave" : "Nova aeronave"}
           </DialogTitle>
 
-          {/* CORREÇÃO AQUI: Adicionar a descrição obrigatória (escondida ou visível) */}
           <DialogDescription className="hidden">
-            Preencha os dados do aeronave para registar no sistema.
+            Preencha os dados da aeronave para registrar no sistema.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 pt-4">
@@ -75,6 +81,7 @@ export function AeronaveFormModal({
             <Input
               id="modelo"
               required
+              disabled={isSaving} // Bloqueia o input
               value={formData.modelo}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, modelo: e.target.value }))
@@ -86,6 +93,7 @@ export function AeronaveFormModal({
             <Input
               id="tipo"
               required
+              disabled={isSaving} // Bloqueia o input
               value={formData.tipo}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, tipo: e.target.value }))
@@ -99,6 +107,7 @@ export function AeronaveFormModal({
               type="number"
               required
               min="1"
+              disabled={isSaving} // Bloqueia o input
               value={formData.capacidadeAssentos || ""}
               onChange={(e) =>
                 setFormData((prev) => ({
@@ -109,11 +118,20 @@ export function AeronaveFormModal({
             />
           </div>
           <DialogFooter className="pt-4">
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              disabled={isSaving} // Bloqueia o botão cancelar
+            >
               Cancelar
             </Button>
-            <Button type="submit" className="bg-slate-900 text-white">
-              Salvar Aeronave
+            <Button
+              type="submit"
+              className="bg-slate-900 text-white"
+              disabled={isSaving} // Bloqueia o botão salvar
+            >
+              {isSaving ? "Salvando..." : "Salvar Aeronave"}
             </Button>
           </DialogFooter>
         </form>

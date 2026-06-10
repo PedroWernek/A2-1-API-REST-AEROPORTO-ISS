@@ -117,8 +117,10 @@ export function VooFormModal({
     }
   }, [vooEditando, isOpen])
 
-  // Lógica de clique no mapa alterada para usar o nome completo
   const handleMapClick = (aeroporto: (typeof AEROPORTOS)[0]) => {
+    // ALTERAÇÃO: Impede a interação com o mapa se estiver salvando
+    if (loading) return
+
     if (selecaoMapa === "origem") {
       setFormData((prev) => ({ ...prev, origem: aeroporto.nome }))
       toast.success(`Origem definida: ${aeroporto.nome}`)
@@ -133,7 +135,6 @@ export function VooFormModal({
     e.preventDefault()
     setLoading(true)
 
-    // Envia a string exata que está no campo, sem forçar uppercase ou limites
     const payload: Voo = {
       origem: formData.origem,
       destino: formData.destino,
@@ -187,6 +188,7 @@ export function VooFormModal({
                   variant={selecaoMapa === "origem" ? "default" : "secondary"}
                   size="sm"
                   className="h-7 text-xs"
+                  disabled={loading} // ALTERAÇÃO
                   onClick={() => setSelecaoMapa("origem")}
                 >
                   Definir Origem
@@ -196,6 +198,7 @@ export function VooFormModal({
                   variant={selecaoMapa === "destino" ? "default" : "secondary"}
                   size="sm"
                   className="h-7 text-xs"
+                  disabled={loading} // ALTERAÇÃO
                   onClick={() => setSelecaoMapa("destino")}
                 >
                   Definir Destino
@@ -213,7 +216,7 @@ export function VooFormModal({
                   >
                     <div
                       onClick={() => handleMapClick(aeroporto)}
-                      className="group relative cursor-pointer transition-transform hover:scale-125"
+                      className={`group relative transition-transform ${loading ? "cursor-not-allowed" : "cursor-pointer hover:scale-125"}`} // ALTERAÇÃO NO MAPA
                     >
                       <MapPin
                         className={`h-7 w-7 drop-shadow-md ${
@@ -243,6 +246,7 @@ export function VooFormModal({
                   required
                   placeholder="Ex: Curitiba"
                   value={formData.origem}
+                  disabled={loading} // ALTERAÇÃO
                   onChange={(e) =>
                     setFormData((prev) => ({ ...prev, origem: e.target.value }))
                   }
@@ -256,6 +260,7 @@ export function VooFormModal({
                   required
                   placeholder="Ex: São Paulo"
                   value={formData.destino}
+                  disabled={loading} // ALTERAÇÃO
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
@@ -284,6 +289,7 @@ export function VooFormModal({
                   type="datetime-local"
                   required
                   value={formData.dataHoraVoo}
+                  disabled={loading} // ALTERAÇÃO
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
@@ -302,6 +308,7 @@ export function VooFormModal({
                   required
                   min="1"
                   value={formData.assentosDisponiveis}
+                  disabled={loading} // ALTERAÇÃO
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
@@ -325,7 +332,7 @@ export function VooFormModal({
                   setFormData((prev) => ({ ...prev, aeronaveId: value }))
                 }
                 required
-                disabled={carregandoAeronaves}
+                disabled={carregandoAeronaves || loading} // ALTERAÇÃO
               >
                 <SelectTrigger className="bg-white">
                   <SelectValue
@@ -354,7 +361,12 @@ export function VooFormModal({
           </div>
 
           <DialogFooter className="pt-2">
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              disabled={loading} // ALTERAÇÃO
+            >
               Cancelar
             </Button>
             <Button
@@ -363,7 +375,9 @@ export function VooFormModal({
               className="min-w-[120px] bg-slate-900 text-white"
             >
               {loading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Salvando...
+                </>
               ) : (
                 "Salvar Voo"
               )}

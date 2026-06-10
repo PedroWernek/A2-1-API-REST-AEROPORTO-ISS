@@ -57,7 +57,7 @@ export function PassagemFormModal({
 }: PassagemFormModalProps) {
   const [passageiros, setPassageiros] = useState<Passageiro[]>([])
   const [voos, setVoos] = useState<Voo[]>([])
-  const [todasPassagens, setTodasPassagens] = useState<Passagem[]>([]) // Para saber quais assentos estão ocupados
+  const [todasPassagens, setTodasPassagens] = useState<Passagem[]>([])
 
   const [loading, setLoading] = useState(false)
   const [carregandoDados, setCarregandoDados] = useState(false)
@@ -69,12 +69,10 @@ export function PassagemFormModal({
     valor: "",
   })
 
-  // 1. CARREGAR TODOS OS DADOS COM ESTADO DE LOADING
   useEffect(() => {
     if (isOpen) {
       setCarregandoDados(true)
 
-      // Promise.all executa as 3 consultas ao mesmo tempo (mais rápido!)
       Promise.all([
         passageiroService.listar(),
         vooService.listar(),
@@ -90,7 +88,6 @@ export function PassagemFormModal({
     }
   }, [isOpen])
 
-  // 2. PREENCHER DADOS AO EDITAR
   useEffect(() => {
     if (passagemEditando && isOpen) {
       setFormData({
@@ -110,10 +107,8 @@ export function PassagemFormModal({
     }
   }, [passagemEditando, isOpen])
 
-  // 3. LÓGICA DO MAPA DE ASSENTOS
   const vooSelecionado = voos.find((v) => v.id === formData.vooId)
 
-  // Lista todos os assentos já vendidos para este voo específico
   const assentosOcupados = todasPassagens
     .filter(
       (p) => ((p.voo as Voo)?.id || (p.voo as any)?.id) === formData.vooId
@@ -129,20 +124,18 @@ export function PassagemFormModal({
     const assentoIndex =
       (row - 1) * 4 + letrasMap[letra as keyof typeof letrasMap]
 
-    // Se passar da capacidade máxima do avião, não desenha o assento
     if (assentoIndex > maxCapacidade) return <div className="h-9 w-9" />
 
     const seatId = `${row}${letra}`
     const isSelected = formData.assento === seatId
 
-    // O assento é considerado ocupado SE está na lista de ocupados E NÃO é o assento que estamos a editar no momento
     const isOccupied =
       assentosOcupados.includes(seatId) && passagemEditando?.assento !== seatId
 
     return (
       <button
         type="button"
-        disabled={isOccupied}
+        disabled={isOccupied || loading} // ALTERAÇÃO: Bloqueia clique no assento se estiver salvando
         onClick={() => setFormData((prev) => ({ ...prev, assento: seatId }))}
         title={isOccupied ? `Ocupado` : `Selecionar ${seatId}`}
         className={`relative flex h-9 w-9 flex-col items-center justify-center rounded-t-lg rounded-b-sm text-xs font-bold transition-all ${
@@ -168,7 +161,6 @@ export function PassagemFormModal({
       )
     }
 
-    // Calcula as linhas de 4 assentos com base na capacidade real da aeronave
     const capacidade =
       (vooSelecionado.aeronave as any)?.capacidadeAssentos || 60
     const totalRows = Math.ceil(capacidade / 4)
@@ -204,11 +196,9 @@ export function PassagemFormModal({
     )
   }
 
-  // 4. SUBMISSÃO DO FORMULÁRIO
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    // Validação extra de UX
     if (!formData.assento) {
       toast.error("Por favor, selecione um assento no mapa da aeronave.")
       return
@@ -254,7 +244,6 @@ export function PassagemFormModal({
 
         <form onSubmit={handleSubmit} className="pt-2">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-            {/* COLUNA ESQUERDA: FORMULÁRIO DE DADOS */}
             <div className="space-y-5">
               <div className="space-y-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
                 <div className="space-y-1.5">
@@ -274,7 +263,7 @@ export function PassagemFormModal({
                       setFormData((prev) => ({ ...prev, passageiroId: value }))
                     }
                     required
-                    disabled={carregandoDados}
+                    disabled={carregandoDados || loading} // ALTERAÇÃO AQUI
                   >
                     <SelectTrigger className="bg-white">
                       <SelectValue
@@ -306,7 +295,6 @@ export function PassagemFormModal({
                   <Select
                     value={formData.vooId}
                     onValueChange={(value) => {
-                      // Ao trocar de voo, apagamos o assento antigo pois o mapa vai mudar
                       setFormData((prev) => ({
                         ...prev,
                         vooId: value,
@@ -314,7 +302,7 @@ export function PassagemFormModal({
                       }))
                     }}
                     required
-                    disabled={carregandoDados}
+                    disabled={carregandoDados || loading} // ALTERAÇÃO AQUI
                   >
                     <SelectTrigger className="bg-white">
                       <SelectValue
@@ -355,6 +343,7 @@ export function PassagemFormModal({
                     required
                     placeholder="0.00"
                     value={formData.valor}
+                    disabled={loading} // ALTERAÇÃO AQUI
                     onChange={(e) =>
                       setFormData((prev) => ({
                         ...prev,
@@ -372,6 +361,7 @@ export function PassagemFormModal({
                     readOnly
                     placeholder="Clique no mapa ao lado..."
                     value={formData.assento}
+                    disabled={loading} // ALTERAÇÃO AQUI
                     className="cursor-default border-dashed bg-slate-200/50 font-bold text-slate-700"
                   />
                   <p className="text-[11px] text-slate-500">
@@ -381,7 +371,6 @@ export function PassagemFormModal({
               </div>
             </div>
 
-            {/* COLUNA DIREITA: MAPA DA AERONAVE */}
             <div className="flex h-full flex-col">
               <Label className="mb-2 flex items-center gap-2 tracking-wider text-slate-500 uppercase">
                 <Armchair className="h-4 w-4" /> Mapa da Aeronave
@@ -399,7 +388,12 @@ export function PassagemFormModal({
           </div>
 
           <DialogFooter className="mt-6 border-t pt-6">
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              disabled={loading} // ALTERAÇÃO AQUI
+            >
               Cancelar
             </Button>
             <Button
@@ -408,7 +402,10 @@ export function PassagemFormModal({
               className="min-w-[140px] bg-slate-900 text-white"
             >
               {loading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Salvando...
+                </>
               ) : passagemEditando ? (
                 "Atualizar Bilhete"
               ) : (

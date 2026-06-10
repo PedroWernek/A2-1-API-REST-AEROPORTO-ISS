@@ -38,6 +38,9 @@ export function VoosPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [vooEditando, setVooEditando] = useState<any | null>(null)
 
+  // NOVO ESTADO: Guarda o ID do voo que está sendo deletado
+  const [deletandoId, setDeletandoId] = useState<string | null>(null)
+
   useEffect(() => {
     carregarVoos()
   }, [])
@@ -58,15 +61,18 @@ export function VoosPage() {
 
   const handleDelete = async (id: string) => {
     if (window.confirm("Deseja mesmo cancelar e remover este voo?")) {
+      setDeletandoId(id) // Ativa o loading na linha clicada
       try {
         await vooService.remover(id)
         toast.success("Voo cancelado e removido com sucesso!") // <-- 2. Feedback visual de SUCESSO
-        carregarVoos()
+        await carregarVoos() // Aguarda recarregar a tabela
       } catch (error) {
         console.error(error)
         toast.error(
           "Erro ao remover o voo. Pode haver passagens emitidas para esta rota."
         ) // <-- 3. Feedback visual de ERRO
+      } finally {
+        setDeletandoId(null) // Finaliza o loading
       }
     }
   }
@@ -159,6 +165,7 @@ export function VoosPage() {
                           setVooEditando(voo)
                           setIsModalOpen(true)
                         }}
+                        disabled={deletandoId === voo.id} // Bloqueia durante exclusão
                       >
                         <Pencil size={16} />
                       </Button>
@@ -167,8 +174,14 @@ export function VoosPage() {
                         size="icon"
                         onClick={() => handleDelete(voo.id)}
                         className="text-slate-400 hover:bg-red-50 hover:text-red-600"
+                        disabled={deletandoId === voo.id} // Bloqueia durante exclusão
                       >
-                        <Trash2 size={16} />
+                        {/* Renderiza o spinner se estiver deletando, senão a lixeira */}
+                        {deletandoId === voo.id ? (
+                          <Loader2 size={16} className="animate-spin" />
+                        ) : (
+                          <Trash2 size={16} />
+                        )}
                       </Button>
                     </TableCell>
                   </TableRow>

@@ -22,41 +22,47 @@ export function AeronavesPage() {
     null
   )
 
+  // NOVO ESTADO: Guarda o ID da aeronave que está sendo deletada
+  const [deletandoId, setDeletandoId] = useState<string | null>(null)
+
   useEffect(() => {
     carregarAeronaves()
   }, [])
 
-const carregarAeronaves = async () => {
-  setLoading(true)
-  try {
-    const data = await aeronaveService.listar()
-    // O truque do || [] garante que se vier nulo/undefined, vira um array vazio
-    setAeronaves(data || [])
-  } catch (error) {
-    console.error(error)
-    // Em caso de erro na API (ex: servidor desligado), não quebra a tela
-    setAeronaves([])
-  } finally {
-    setLoading(false)
-  }
-}
-
-const handleDelete = async (id?: string) => {
-  if (!id) return // <-- Se não tiver ID, cancela a função na hora
-
-  if (window.confirm("Tem a certeza que deseja eliminar esta aeronave?")) {
+  const carregarAeronaves = async () => {
+    setLoading(true)
     try {
-      await aeronaveService.remover(id)
-      toast.success("Aeronave removida permanentemente.")
-      carregarAeronaves()
+      const data = await aeronaveService.listar()
+      // O truque do || [] garante que se vier nulo/undefined, vira um array vazio
+      setAeronaves(data || [])
     } catch (error) {
       console.error(error)
-      toast.error(
-        "Não foi possível remover a aeronave. Verifique se existem voos associados a ela."
-      )
+      // Em caso de erro na API (ex: servidor desligado), não quebra a tela
+      setAeronaves([])
+    } finally {
+      setLoading(false)
     }
   }
-}
+
+  const handleDelete = async (id?: string) => {
+    if (!id) return // <-- Se não tiver ID, cancela a função na hora
+
+    if (window.confirm("Tem a certeza que deseja eliminar esta aeronave?")) {
+      setDeletandoId(id) // Ativa o loading na linha clicada
+      try {
+        await aeronaveService.remover(id)
+        toast.success("Aeronave removida permanentemente.")
+        await carregarAeronaves()
+      } catch (error) {
+        console.error(error)
+        toast.error(
+          "Não foi possível remover a aeronave. Verifique se existem voos associados a ela."
+        )
+      } finally {
+        setDeletandoId(null) // Desativa o loading, dando sucesso ou erro
+      }
+    }
+  }
 
   return (
     <div className="animate-in space-y-6 duration-500 fade-in">
@@ -75,9 +81,9 @@ const handleDelete = async (id?: string) => {
             setAeronaveEditando(null)
             setIsModalOpen(true)
           }}
-          className="..."
+          className="bg-slate-900 text-white"
         >
-          <Plus size={16} />
+          <Plus size={16} className="mr-2" />
           Nova Aeronave
         </Button>
       </div>
@@ -140,7 +146,7 @@ const handleDelete = async (id?: string) => {
                             setAeronaveEditando(aeronave)
                             setIsModalOpen(true)
                           }}
-                          className="..."
+                          disabled={deletandoId === aeronave.id} // Bloqueia durante exclusão
                         >
                           <Pencil size={16} />
                         </Button>
@@ -150,8 +156,14 @@ const handleDelete = async (id?: string) => {
                           className="h-8 w-8 text-slate-400 hover:bg-red-50 hover:text-red-600"
                           onClick={() => handleDelete(aeronave.id)}
                           title="Excluir"
+                          disabled={deletandoId === aeronave.id} // Bloqueia durante exclusão
                         >
-                          <Trash2 size={16} />
+                          {/* Renderiza o spinner se estiver deletando, senão a lixeira */}
+                          {deletandoId === aeronave.id ? (
+                            <Loader2 size={16} className="animate-spin" />
+                          ) : (
+                            <Trash2 size={16} />
+                          )}
                         </Button>
                       </div>
                     </TableCell>

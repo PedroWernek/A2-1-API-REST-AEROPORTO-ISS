@@ -37,6 +37,9 @@ export function PassagensPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [passagemEditando, setPassagemEditando] = useState<any | null>(null)
 
+  // NOVO ESTADO: Guarda o ID da passagem que está sendo deletada
+  const [deletandoId, setDeletandoId] = useState<string | null>(null)
+
   useEffect(() => {
     carregarPassagens()
   }, [])
@@ -61,13 +64,16 @@ export function PassagensPage() {
         "Atenção: Tem a certeza que deseja cancelar e eliminar esta passagem?"
       )
     ) {
+      setDeletandoId(id) // Ativa o loading apenas nesta linha específica
       try {
         await passagemService.remover(id)
         toast.success("Passagem eliminada com sucesso!") // <-- Feedback visual de sucesso
-        carregarPassagens()
+        await carregarPassagens() // Aguarda a tabela recarregar
       } catch (error) {
         console.error(error)
         toast.error("Erro ao eliminar a passagem. Tente novamente.") // <-- Feedback visual de erro
+      } finally {
+        setDeletandoId(null) // Desativa o loading, independentemente do sucesso ou erro
       }
     }
   }
@@ -161,6 +167,7 @@ export function PassagensPage() {
                           setPassagemEditando(p)
                           setIsModalOpen(true)
                         }}
+                        disabled={deletandoId === p.id} // Bloqueia durante exclusão
                       >
                         <Pencil size={16} />
                       </Button>
@@ -169,8 +176,14 @@ export function PassagensPage() {
                         size="icon"
                         onClick={() => handleDelete(p.id)}
                         className="text-slate-400 hover:bg-red-50 hover:text-red-600"
+                        disabled={deletandoId === p.id} // Bloqueia durante exclusão
                       >
-                        <Trash2 size={16} />
+                        {/* Renderiza o spinner se estiver deletando, senão a lixeira */}
+                        {deletandoId === p.id ? (
+                          <Loader2 size={16} className="animate-spin" />
+                        ) : (
+                          <Trash2 size={16} />
+                        )}
                       </Button>
                     </TableCell>
                   </TableRow>

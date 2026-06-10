@@ -26,7 +26,6 @@ export function PassageiroFormModal({
   onSuccess,
   passageiroEditando,
 }: PassageiroFormModalProps) {
-  // O Estado reflete EXATAMENTE o que o Java espera
   const [formData, setFormData] = useState<Passageiro>({
     nome: "",
     cpf: "",
@@ -39,7 +38,9 @@ export function PassageiroFormModal({
     },
   })
 
-  // Preenche o formulário ao abrir para edição ou limpa ao fechar
+  // NOVO ESTADO: Controla se está salvando no momento
+  const [isSaving, setIsSaving] = useState(false)
+
   useEffect(() => {
     if (passageiroEditando && isOpen) {
       setFormData(passageiroEditando)
@@ -58,8 +59,84 @@ export function PassageiroFormModal({
     }
   }, [passageiroEditando, isOpen])
 
+  const handleCepChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const cepDigitado = e.target.value.replace(/\D/g, "")
+
+    if (cepDigitado.length < 8) {
+      setFormData((prev) => ({
+        ...prev,
+        endereco: {
+          ...prev.endereco,
+          cep: cepDigitado,
+          logradouro: "",
+          bairro: "",
+          localidade: "",
+          uf: "",
+        },
+      }))
+      return
+    }
+
+    if (cepDigitado.length === 8) {
+      setFormData((prev) => ({
+        ...prev,
+        endereco: { ...prev.endereco, cep: cepDigitado },
+      }))
+
+      try {
+        const response = await fetch(
+          `https://viacep.com.br/ws/${cepDigitado}/json/`
+        )
+        const data = await response.json()
+
+        if (data.erro) {
+          toast.error("CEP não encontrado.")
+          setFormData((prev) => ({
+            ...prev,
+            endereco: {
+              ...prev.endereco,
+              logradouro: "",
+              bairro: "",
+              localidade: "",
+              uf: "",
+            },
+          }))
+          return
+        }
+
+        setFormData((prev) => ({
+          ...prev,
+          endereco: {
+            cep: cepDigitado,
+            logradouro: data.logradouro || "",
+            bairro: data.bairro || "",
+            localidade: data.localidade || "",
+            uf: data.uf || "",
+          },
+        }))
+        toast.success("Endereço encontrado!")
+      } catch (error) {
+        console.error("Erro ao buscar CEP:", error)
+        toast.error("Erro ao buscar o CEP na base de dados.")
+
+        setFormData((prev) => ({
+          ...prev,
+          endereco: {
+            ...prev.endereco,
+            logradouro: "",
+            bairro: "",
+            localidade: "",
+            uf: "",
+          },
+        }))
+      }
+    }
+  }
+
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setIsSaving(true) // Inicia o estado de salvamento
+
     try {
       if (passageiroEditando?.id) {
         await passageiroService.atualizar(passageiroEditando.id, formData)
@@ -72,26 +149,25 @@ export function PassageiroFormModal({
     } catch (error) {
       console.error("Erro ao salvar passageiro:", error)
       toast.error("Erro ao salvar passageiro.")
+    } finally {
+      setIsSaving(false) // Finaliza o estado de salvamento (independente de dar erro ou sucesso)
     }
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      {/* max-w-2xl deixa o modal mais largo para caber os campos de endereço */}
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>
             {passageiroEditando ? "Editar Passageiro" : "Novo Passageiro"}
           </DialogTitle>
 
-          {/* CORREÇÃO AQUI: Adicionar a descrição obrigatória (escondida ou visível) */}
           <DialogDescription className="hidden">
-            Preencha os dados do passageiro para registar no sistema.
+            Preencha os dados do passageiro para registrar no sistema.
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6 pt-4">
-          {/* SESSÃO: DADOS PESSOAIS */}
           <div className="space-y-4">
             <h4 className="text-sm font-medium tracking-wider text-slate-500 uppercase">
               Dados Pessoais
@@ -102,6 +178,7 @@ export function PassageiroFormModal({
                 <Input
                   id="nome"
                   required
+                  disabled={isSaving}
                   value={formData.nome}
                   onChange={(e) =>
                     setFormData((prev) => ({ ...prev, nome: e.target.value }))
@@ -113,6 +190,7 @@ export function PassageiroFormModal({
                 <Input
                   id="cpf"
                   required
+                  disabled={isSaving}
                   value={formData.cpf}
                   onChange={(e) =>
                     setFormData((prev) => ({ ...prev, cpf: e.target.value }))
@@ -135,13 +213,11 @@ export function PassageiroFormModal({
                 <Input
                   id="cep"
                   required
+                  maxLength={9}
+                  placeholder="Apenas números"
+                  disabled={isSaving}
                   value={formData.endereco.cep}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      endereco: { ...prev.endereco, cep: e.target.value },
-                    }))
-                  }
+                  onChange={handleCepChange}
                 />
               </div>
               <div className="col-span-2 space-y-2">
@@ -149,6 +225,7 @@ export function PassageiroFormModal({
                 <Input
                   id="logradouro"
                   required
+                  disabled={isSaving}
                   value={formData.endereco.logradouro}
                   onChange={(e) =>
                     setFormData((prev) => ({
@@ -169,6 +246,7 @@ export function PassageiroFormModal({
                 <Input
                   id="bairro"
                   required
+                  disabled={isSaving}
                   value={formData.endereco.bairro}
                   onChange={(e) =>
                     setFormData((prev) => ({
@@ -183,6 +261,7 @@ export function PassageiroFormModal({
                 <Input
                   id="localidade"
                   required
+                  disabled={isSaving}
                   value={formData.endereco.localidade}
                   onChange={(e) =>
                     setFormData((prev) => ({
@@ -202,6 +281,7 @@ export function PassageiroFormModal({
                   required
                   maxLength={2}
                   className="uppercase"
+                  disabled={isSaving}
                   value={formData.endereco.uf}
                   onChange={(e) =>
                     setFormData((prev) => ({
@@ -218,11 +298,21 @@ export function PassageiroFormModal({
           </div>
 
           <DialogFooter className="pt-4">
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              disabled={isSaving}
+            >
               Cancelar
             </Button>
-            <Button type="submit" className="bg-slate-900 text-white">
-              Salvar Passageiro
+            {/* O BOTÃO AGORA MUDA DE ESTADO */}
+            <Button
+              type="submit"
+              className="bg-slate-900 text-white"
+              disabled={isSaving}
+            >
+              {isSaving ? "Salvando..." : "Salvar Passageiro"}
             </Button>
           </DialogFooter>
         </form>

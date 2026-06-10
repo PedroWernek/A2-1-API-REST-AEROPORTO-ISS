@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { Plus, Pencil, Trash2, Loader2, UserX } from "lucide-react"
+import { toast } from "sonner" // Adicionado para manter o padrão de feedback
 import { passageiroService } from "../services/passageiroService"
 import { Button } from "../components/ui/button"
 import {
@@ -18,27 +19,40 @@ export function PassageirosPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [passageiroEditando, setPassageiroEditando] = useState<any | null>(null)
 
+  // NOVO ESTADO: Guarda o ID do passageiro que está sendo deletado
+  const [deletandoId, setDeletandoId] = useState<string | null>(null)
+
   useEffect(() => {
     carregarPassageiros()
   }, [])
 
-const carregarPassageiros = async () => {
-  setLoading(true)
-  try {
-    const data = await passageiroService.listar()
-    setPassageiros(data || [])
-  } catch (error) {
-    console.error(error)
-    setPassageiros([])
-  } finally {
-    setLoading(false)
+  const carregarPassageiros = async () => {
+    setLoading(true)
+    try {
+      const data = await passageiroService.listar()
+      setPassageiros(data || [])
+    } catch (error) {
+      console.error(error)
+      setPassageiros([])
+    } finally {
+      setLoading(false)
+    }
   }
-}
 
+  // ATUALIZADO: Agora controla o estado de loading e exibe notificações
   const handleDelete = async (id: string) => {
     if (window.confirm("Deseja mesmo remover este passageiro do sistema?")) {
-      await passageiroService.remover(id)
-      carregarPassageiros()
+      setDeletandoId(id) // Inicia o loading apenas para este ID
+      try {
+        await passageiroService.remover(id)
+        toast.success("Passageiro removido com sucesso!")
+        await carregarPassageiros() // Aguarda recarregar a lista
+      } catch (error) {
+        console.error("Erro ao deletar passageiro:", error)
+        toast.error("Erro ao remover o passageiro.")
+      } finally {
+        setDeletandoId(null) // Finaliza o loading, independentemente do resultado
+      }
     }
   }
 
@@ -115,16 +129,25 @@ const carregarPassageiros = async () => {
                           setPassageiroEditando(p)
                           setIsModalOpen(true)
                         }}
+                        disabled={deletandoId === p.id} // Impede edição enquanto deleta
                       >
                         <Pencil size={16} />
                       </Button>
+
+                      {/* BOTÃO DE DELETAR ATUALIZADO */}
                       <Button
                         variant="ghost"
                         size="icon"
                         onClick={() => handleDelete(p.id)}
                         className="text-red-500"
+                        disabled={deletandoId === p.id} // Desabilita o botão enquanto deleta
                       >
-                        <Trash2 size={16} />
+                        {/* Renderiza o spinner se for o ID atual, senão renderiza a lixeira */}
+                        {deletandoId === p.id ? (
+                          <Loader2 size={16} className="animate-spin" />
+                        ) : (
+                          <Trash2 size={16} />
+                        )}
                       </Button>
                     </TableCell>
                   </TableRow>
